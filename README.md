@@ -4,7 +4,8 @@ An Ansible role that installs and configures [TorrServer](https://github.com/You
 
 ![GitHub License](https://img.shields.io/github/license/pavelpikta/ansible-role-torrserver?style=flat&label=License)
 [![CI](https://github.com/pavelpikta/ansible-role-torrserver/actions/workflows/ci.yml/badge.svg)](https://github.com/pavelpikta/ansible-role-torrserver/actions/workflows/ci.yml)
-[![Tag](https://img.shields.io/github/v/tag/pavelpikta/ansible-role-torrserver?style=flat&label=Release)](https://github.com/pavelpikta/ansible-role-torrserver/releases)
+[![Release](https://github.com/pavelpikta/ansible-role-torrserver/actions/workflows/release.yml/badge.svg)](https://github.com/pavelpikta/ansible-role-torrserver/actions/workflows/release.yml)
+[![GitHub Tag](https://img.shields.io/github/v/tag/pavelpikta/ansible-role-torrserver?sort=semver&style=flat&label=Release)](https://github.com/pavelpikta/ansible-role-torrserver/tags)
 
 ## Features
 
