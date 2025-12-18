@@ -13,6 +13,10 @@ defaults:
   run:
     working-directory: "pavelpikta.torrserver"
 
+env:
+  PY_COLORS: "1"
+  ANSIBLE_FORCE_COLOR: "1"
+
 jobs:
   lint:
     name: Lint
@@ -62,6 +66,4 @@ jobs:
       - name: Run Molecule tests.
         run: molecule test
         env:
-          PY_COLORS: "1"
-          ANSIBLE_FORCE_COLOR: "1"
           MOLECULE_DISTRO: ${{ matrix.distro }}
