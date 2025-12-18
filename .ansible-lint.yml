@@ -1,0 +1,40 @@
+---
+# .ansible-lint.yml
+
+profile: production
+
+# sarif_file: .ansible-lint.sarif
+
+exclude_paths:
+  - .cache/
+  - .github/
+  - .vscode/
+  - .git/
+  - .gitignore
+  - .yamllint.yml
+  - .ansible-lint.yml
+
+parseable: true
+quiet: false
+# strict: true
+verbosity: 1
+
+# Offline mode disables installation of requirements.yml and schema refreshing
+offline: true
+
+use_default_rules: true
+
+skip_list:
+  - skip_this_tag
+  - role_name
+
+# Ansible-lint does not automatically load rules that have the 'opt-in' tag.
+# You must enable opt-in rules by listing each rule 'id' below.
+enable_list:
+  - args
+  - empty-string-compare # opt-in
+  - no-log-password # opt-in
+  - no-same-owner # opt-in
+  - name[prefix] # opt-in
+  - galaxy-version-incorrect # opt-in
+  - yaml # opt-in

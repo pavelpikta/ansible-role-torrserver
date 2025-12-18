@@ -1,0 +1,21 @@
+---
+extends: default
+
+ignore: |
+  .github
+
+rules:
+  comments:
+    level: warning
+    min-spaces-from-content: 1
+  comments-indentation: disable
+  line-length:
+    level: warning
+    max: 150
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+  braces:
+    max-spaces-inside: 1
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true

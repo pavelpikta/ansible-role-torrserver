@@ -1,0 +1,14 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  vars:
+    torrserver_version: 136
+    torrserver_enable_bbr: false
+    torrserver_enable_auth: false
+    torrserver_enable_log: true
+    torrserver_read_only: false
+
+  roles:
+    - role: pavelpikta.torrserver

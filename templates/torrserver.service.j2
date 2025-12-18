@@ -1,0 +1,20 @@
+[Unit]
+Description=TorrServer - stream torrent to http
+Wants=network-online.target
+After=network.target
+
+[Service]
+User={{ torrserver_user }}
+Group={{ torrserver_group }}
+Type=simple
+NonBlocking=true
+EnvironmentFile={{ torrserver_install_dir }}/{{ torrserver_service_name }}.config
+ExecStart={{ torrserver_install_dir }}/TorrServer-linux-{{ architecture }} $DAEMON_OPTIONS
+ExecReload=/bin/kill -HUP ${MAINPID}
+ExecStop=/bin/kill -INT ${MAINPID}
+TimeoutSec=30
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

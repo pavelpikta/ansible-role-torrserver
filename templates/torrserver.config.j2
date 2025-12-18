@@ -1,0 +1,1 @@
+DAEMON_OPTIONS="--port {{ torrserver_port }} --path {{ torrserver_install_dir }}{% if torrserver_read_only %} --rdb{% endif %}{% if torrserver_enable_log %} --logpath {{ torrserver_log_path }}{% endif %}{% if torrserver_enable_auth %} --httpauth{% endif %}"

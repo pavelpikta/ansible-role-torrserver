@@ -1,0 +1,6 @@
+---
+- name: Restart torrserver
+  ansible.builtin.systemd:
+    name: "{{ torrserver_service_name }}"
+    state: restarted
+    daemon_reload: true

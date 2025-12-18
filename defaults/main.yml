@@ -1,0 +1,23 @@
+---
+torrserver_version: latest
+torrserver_user: torrserver
+torrserver_group: torrserver
+torrserver_install_dir: /opt/torrserver
+torrserver_port: 8090
+torrserver_service_name: torrserver
+
+# Configuration options
+torrserver_read_only: false
+torrserver_enable_log: false
+torrserver_log_path: "{{ torrserver_install_dir }}/{{ torrserver_service_name }}.log"
+torrserver_enable_auth: false
+torrserver_auth_users:
+  torrserver: torrserver
+
+# Performance
+torrserver_enable_bbr: true
+
+# Advanced
+torrserver_bin_prefix: TorrServer-linux
+torrserver_repo_url: https://github.com/YouROK/TorrServer
+torrserver_api_url: https://api.github.com/repos/YouROK/TorrServer

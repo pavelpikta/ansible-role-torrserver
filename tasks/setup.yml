@@ -1,0 +1,58 @@
+---
+- name: setup | Update package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: setup | Update package cache (Archlinux)
+  community.general.pacman:
+    update_cache: true
+  when: ansible_facts['os_family'] == 'Archlinux'
+
+- name: setup | Update package cache (RedHat)
+  ansible.builtin.dnf:
+    update_cache: true
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: setup | Install dependencies
+  ansible.builtin.package:
+    name:
+      - curl
+      - >-
+        {% if ansible_facts['os_family'] == 'Debian' %}
+        iputils-ping
+        {% else %}
+        iputils
+        {% endif %}
+      - >-
+        {% if ansible_facts['os_family'] == 'Debian' %}
+        dnsutils
+        {% elif ansible_facts['os_family'] == 'Archlinux' %}
+        bind-tools
+        {% else %}
+        bind-utils
+        {% endif %}
+    state: present
+
+- name: setup | Create torrserver group
+  ansible.builtin.group:
+    name: "{{ torrserver_group }}"
+    system: true
+
+- name: setup | Create torrserver user
+  ansible.builtin.user:
+    name: "{{ torrserver_user }}"
+    group: "{{ torrserver_group }}"
+    home: "{{ torrserver_install_dir }}"
+    create_home: true
+    shell: /bin/false
+    system: true
+
+- name: setup | Ensure install directory exists
+  ansible.builtin.file:
+    path: "{{ torrserver_install_dir }}"
+    state: directory
+    owner: "{{ torrserver_user }}"
+    group: "{{ torrserver_group }}"
+    mode: "0755"

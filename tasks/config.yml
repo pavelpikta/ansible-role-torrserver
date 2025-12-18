@@ -1,0 +1,19 @@
+---
+- name: config | Create configuration file
+  ansible.builtin.template:
+    src: torrserver.config.j2
+    dest: "{{ torrserver_install_dir }}/{{ torrserver_service_name }}.config"
+    owner: "{{ torrserver_user }}"
+    group: "{{ torrserver_group }}"
+    mode: "0644"
+  notify: Restart torrserver
+
+- name: config | Create authentication file
+  ansible.builtin.template:
+    src: accs.db.j2
+    dest: "{{ torrserver_install_dir }}/accs.db"
+    owner: "{{ torrserver_user }}"
+    group: "{{ torrserver_group }}"
+    mode: "0600"
+  when: torrserver_enable_auth
+  notify: Restart torrserver
