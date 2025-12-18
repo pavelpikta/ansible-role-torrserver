@@ -8,7 +8,7 @@ galaxy_info:
   role_name: torrserver
   namespace: pavelpikta
   description: Ansible role to install and configure TorrServer
-  license: MIT
+  license: Apache-2.0
   min_ansible_version: "2.19.3"
   platforms:
     - name: Debian
