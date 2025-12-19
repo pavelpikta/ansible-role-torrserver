@@ -33,13 +33,24 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_user` | `torrserver` | System user for TorrServer. |
 | `torrserver_group` | `torrserver` | System group for TorrServer. |
 | `torrserver_install_dir` | `/opt/torrserver` | Directory where TorrServer will be installed. |
-| `torrserver_port` | `8090` | Port for TorrServer web interface. |
+| `torrserver_port` | `8090` | Port for TorrServer web interface (`--port`). |
 | `torrserver_service_name` | `torrserver` | Name of the systemd service. |
 | `torrserver_read_only` | `false` | Enable read-only database mode (`--rdb`). |
 | `torrserver_enable_log` | `false` | Enable logging to file. |
-| `torrserver_log_path` | `{{ torrserver_install_dir }}/{{ torrserver_service_name }}.log` | Path to log file. |
-| `torrserver_enable_auth` | `false` | Enable HTTP Authentication. |
+| `torrserver_log_path` | `{{ torrserver_install_dir }}/{{ torrserver_service_name }}.log` | Path to log file (`--logpath`). |
+| `torrserver_weblog_path` | `null` | Path to web access log file (`--weblogpath`). |
+| `torrserver_enable_auth` | `false` | Enable HTTP Authentication (`--httpauth`). |
 | `torrserver_auth_users` | `{ torrserver: torrserver }` | Dictionary of users and passwords for authentication. |
+| `torrserver_ssl_enable` | `false` | Enable HTTPS for web server (`--ssl`). |
+| `torrserver_ssl_port` | `8091` | HTTPS port for web server (`--sslport`). |
+| `torrserver_ssl_cert_path` | `null` | Path to SSL certificate file (`--sslcert`). |
+| `torrserver_ssl_key_path` | `null` | Path to SSL key file (`--sslkey`). |
+| `torrserver_dontkill` | `false` | Don't kill server on signal (`--dontkill`). |
+| `torrserver_torrents_dir` | `null` | Autoload torrents from directory (`--torrentsdir`). |
+| `torrserver_torrent_addr` | `null` | Torrent client address, format `[IP]:PORT` (`--torrentaddr`). |
+| `torrserver_pubipv4` | `null` | Set public IPv4 address (`--pubipv4`). |
+| `torrserver_pubipv6` | `null` | Set public IPv6 address (`--pubipv6`). |
+| `torrserver_searchwa` | `false` | Allow search without authentication (`--searchwa`). |
 | `torrserver_enable_bbr` | `true` | Enable BBR congestion control for better streaming performance. |
 
 ### Advanced Variables

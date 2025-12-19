@@ -14,6 +14,29 @@ torrserver_enable_auth: false
 torrserver_auth_users:
   torrserver: torrserver
 
+# SSL/TLS options
+torrserver_ssl_enable: false
+torrserver_ssl_port: 8091
+torrserver_ssl_cert_path: null
+torrserver_ssl_key_path: null
+
+# Logging options
+torrserver_weblog_path: null
+
+# Service behavior options
+torrserver_dontkill: false
+
+# Torrent options
+torrserver_torrents_dir: null
+torrserver_torrent_addr: null
+
+# Network options
+torrserver_pubipv4: null
+torrserver_pubipv6: null
+
+# Search options
+torrserver_searchwa: false
+
 # Performance
 torrserver_enable_bbr: true
 

@@ -1,1 +1,16 @@
-DAEMON_OPTIONS="--port {{ torrserver_port }} --path {{ torrserver_install_dir }}{% if torrserver_read_only %} --rdb{% endif %}{% if torrserver_enable_log %} --logpath {{ torrserver_log_path }}{% endif %}{% if torrserver_enable_auth %} --httpauth{% endif %}"
+DAEMON_OPTIONS="--port {{ torrserver_port }} \
+--path {{ torrserver_install_dir }}\
+{%- if torrserver_read_only | bool %} --rdb\{% endif %}
+{%- if torrserver_enable_log | bool %} --logpath {{ torrserver_log_path }}\{% endif %}
+{%- if (torrserver_weblog_path | default('')) | trim %} --weblogpath {{ torrserver_weblog_path }}\{% endif %}
+{%- if torrserver_enable_auth | bool %} --httpauth\{% endif %}
+{%- if torrserver_ssl_enable | bool %} --ssl\{% endif %}
+{%- if torrserver_ssl_enable | bool and (torrserver_ssl_port | default('')) | trim %} --sslport {{ torrserver_ssl_port }}\{% endif %}
+{%- if (torrserver_ssl_cert_path | default('')) | trim %} --sslcert {{ torrserver_ssl_cert_path }}\{% endif %}
+{%- if (torrserver_ssl_key_path | default('')) | trim %} --sslkey {{ torrserver_ssl_key_path }}\{% endif %}
+{%- if torrserver_dontkill | bool %} --dontkill\{% endif %}
+{%- if (torrserver_torrents_dir | default('')) | trim %} --torrentsdir {{ torrserver_torrents_dir }}\{% endif %}
+{%- if (torrserver_torrent_addr | default('')) | trim %} --torrentaddr {{ torrserver_torrent_addr }}\{% endif %}
+{%- if (torrserver_pubipv4 | default('')) | trim %} --pubipv4 {{ torrserver_pubipv4 }}\{% endif %}
+{%- if (torrserver_pubipv6 | default('')) | trim %} --pubipv6 {{ torrserver_pubipv6 }}\{% endif %}
+{%- if torrserver_searchwa | bool %} --searchwa{% endif %}"
