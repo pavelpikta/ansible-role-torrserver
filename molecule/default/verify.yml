@@ -2,19 +2,16 @@
 - name: Verify
   hosts: all
   gather_facts: true
-
+  vars:
+    torrserver_service_name: torrserver
   tasks:
     - name: Check torrserver service status
-      ansible.builtin.command:
-        cmd: systemctl is-active {{ torrserver_service_name }}
-      register: service_status
-      changed_when: false
-      failed_when: false
+      ansible.builtin.service_facts:
 
     - name: Assert torrserver service is active
       ansible.builtin.assert:
         that:
-          - service_status.rc == 0
-          - service_status.stdout == "active"
-        fail_msg: "torrserver service is not running (status: {{ service_status.stdout }})"
+          - ansible_facts.services[torrserver_service_name + '.service'] is defined
+          - ansible_facts.services[torrserver_service_name + '.service'].state == "running"
+        fail_msg: "torrserver service is not running"
         success_msg: "torrserver service is running"
