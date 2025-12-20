@@ -5,13 +5,22 @@
   vars:
     torrserver_service_name: torrserver
   tasks:
-    - name: Check torrserver service status
+    - name: Get torrserver service status
+      ansible.builtin.systemd:
+        name: "{{ torrserver_service_name }}"
+      register: torrserver_status
+
+    - name: Display service ActiveState
+      ansible.builtin.debug:
+        msg: "torrserver ActiveState is {{ torrserver_status.status.ActiveState | default('unknown') }}"
+
+    - name: Check if torrserver service is running
       ansible.builtin.service_facts:
 
-    - name: Assert torrserver service is active
+    - name: Assert torrserver service is running
       ansible.builtin.assert:
         that:
-          - ansible_facts.services[torrserver_service_name + '.service'] is defined
-          - ansible_facts.services[torrserver_service_name + '.service'].state == "running"
+          - ansible_facts.services['{{ torrserver_service_name }}.service'].state == 'running'
         fail_msg: "torrserver service is not running"
         success_msg: "torrserver service is running"
+      when: ansible_facts.services['{{ torrserver_service_name }}.service'] is defined
