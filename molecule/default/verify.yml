@@ -10,17 +10,11 @@
         name: "{{ torrserver_service_name }}"
       register: torrserver_status
 
-    - name: Display service ActiveState
-      ansible.builtin.debug:
-        msg: "torrserver ActiveState is {{ torrserver_status.status.ActiveState | default('unknown') }}"
-
-    - name: Check if torrserver service is running
-      ansible.builtin.service_facts:
-
     - name: Assert torrserver service is running
       ansible.builtin.assert:
         that:
-          - ansible_facts.services['{{ torrserver_service_name }}.service'].state == 'running'
-        fail_msg: "torrserver service is not running"
-        success_msg: "torrserver service is running"
-      when: ansible_facts.services['{{ torrserver_service_name }}.service'] is defined
+          - torrserver_status.status is defined
+          - torrserver_status.status.ActiveState == 'active'
+          - torrserver_status.status.SubState == 'running'
+        fail_msg: "torrserver service is not active/running (ActiveState: {{ torrserver_status.status.ActiveState | default('unknown') }}, SubState: {{ torrserver_status.status.SubState | default('unknown') }})"
+        success_msg: "torrserver service confirmed active and running"
