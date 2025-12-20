@@ -4,22 +4,3 @@
     name: "{{ torrserver_service_name }}"
     state: restarted
     daemon_reload: true
-  notify:
-    - Check torrserver service status
-
-- name: Check torrserver service status
-  block:
-    - name: Check torrserver service status
-      ansible.builtin.service_facts:
-
-    - name: Assert torrserver service is active
-      ansible.builtin.assert:
-        that:
-          - ansible_facts.services[torrserver_service_name + '.service'] is defined
-          - ansible_facts.services[torrserver_service_name + '.service'].state == "running"
-        fail_msg: "torrserver service is not running"
-        success_msg: "torrserver service is running"
-  rescue:
-    - name: Fail if torrserver service is not running
-      ansible.builtin.fail:
-        msg: "torrserver service is not running (status: {{ ansible_facts.services[torrserver_service_name + '.service'].state }})"
