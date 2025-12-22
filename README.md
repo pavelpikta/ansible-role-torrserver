@@ -9,7 +9,8 @@ An Ansible role that installs and configures [TorrServer](https://github.com/You
 
 ## Features
 
-- Installs specific or latest version of TorrServer.
+- Installs specific or latest version of TorrServer from GitHub releases.
+- Install TorrServer from a local file (copy from control node to target host).
 - Configures systemd service.
 - Optional BBR (Bottleneck Bandwidth and Round-trip propagation time) congestion control optimization.
 - Support for multiple architectures (amd64, arm64, arm7, arm5, 386).
@@ -30,7 +31,8 @@ Available variables are listed below, along with default values (see `defaults/m
 
 | Variable | Default Value | Description |
 |----------|---------------|-------------|
-| `torrserver_version` | `latest` | TorrServer version to install (e.g., `133`, `latest`). |
+| `torrserver_version` | `latest` | TorrServer version to install (e.g., `133`, `latest`). Ignored when `torrserver_local_file` is set. |
+| `torrserver_local_file` | `null` | Path to local TorrServer binary file on the control node. If set, the role will copy this file instead of downloading from GitHub. |
 | `torrserver_user` | `torrserver` | System user for TorrServer. |
 | `torrserver_group` | `torrserver` | System group for TorrServer. |
 | `torrserver_install_dir` | `/opt/torrserver` | Directory where TorrServer will be installed. |
@@ -111,8 +113,8 @@ TorznabUrls:
 | Variable | Default Value | Description |
 |----------|---------------|-------------|
 | `torrserver_bin_prefix` | `TorrServer-linux` | Binary filename prefix. |
-| `torrserver_repo_url` | `https://github.com/YouROK/TorrServer` | GitHub repository URL. |
-| `torrserver_api_url` | `https://api.github.com/repos/YouROK/TorrServer` | GitHub API URL. |
+| `torrserver_repo_url` | `https://github.com/YouROK/TorrServer` | GitHub repository URL. Only used for remote installation. |
+| `torrserver_api_url` | `https://api.github.com/repos/YouROK/TorrServer` | GitHub API URL. Only used for remote installation. |
 
 ## Dependencies
 
@@ -133,6 +135,23 @@ None.
         torrserver_auth_users:
           admin: "your_secure_password"
 ```
+
+### Example with Local File Installation
+
+```yaml
+- hosts: all
+  roles:
+    - role: pavelpikta.torrserver
+      vars:
+        # Use local file instead of downloading from GitHub
+        torrserver_local_file: "{{ playbook_dir }}/files/TorrServer-linux-amd64"
+        torrserver_port: 8090
+        torrserver_enable_auth: true
+        torrserver_auth_users:
+          admin: "your_secure_password"
+```
+
+**Note:** When using `torrserver_local_file`, the `torrserver_version` variable is ignored. The role will copy the specified file to the target host. Make sure the file exists on the Ansible control node and matches the target architecture.
 
 ### Example with BitTorr Settings
 
