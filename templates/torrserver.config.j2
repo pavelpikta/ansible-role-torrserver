@@ -1,14 +1,15 @@
 {%- set daemon_options = [] -%}
-{%- set _ = daemon_options.append('--port ' + torrserver_port | string) -%}
-{%- set _ = daemon_options.append('--path ' + torrserver_install_dir) -%}
+{%- set _ = daemon_options.append('--port ' + (torrserver_port | default('') | string)) -%}
+{%- set _ = daemon_options.append('--path ' + (torrserver_install_dir | default('') | string)) -%}
 {%- if torrserver_read_only | bool -%}
 {%- set _ = daemon_options.append('--rdb') -%}
 {%- endif -%}
 {%- if torrserver_enable_log | bool -%}
-{%- set _ = daemon_options.append('--logpath ' + torrserver_log_path) -%}
+{%- set _ = daemon_options.append('--logpath ' + (torrserver_log_path | default('') | string)) -%}
 {%- endif -%}
-{%- if (torrserver_weblog_path | default('')) | trim -%}
-{%- set _ = daemon_options.append('--weblogpath ' + torrserver_weblog_path) -%}
+{%- set weblog_path = (torrserver_weblog_path | default('')) | trim -%}
+{%- if weblog_path -%}
+{%- set _ = daemon_options.append('--weblogpath ' + (weblog_path | string)) -%}
 {%- endif -%}
 {%- if torrserver_enable_auth | bool -%}
 {%- set _ = daemon_options.append('--httpauth') -%}
@@ -16,29 +17,36 @@
 {%- if torrserver_ssl_enable | bool -%}
 {%- set _ = daemon_options.append('--ssl') -%}
 {%- endif -%}
-{%- if torrserver_ssl_enable | bool and (torrserver_ssl_port | default('')) | trim -%}
-{%- set _ = daemon_options.append('--sslport ' + torrserver_ssl_port | string) -%}
+{%- set ssl_port = (torrserver_ssl_port | default('')) | trim -%}
+{%- if torrserver_ssl_enable | bool and ssl_port -%}
+{%- set _ = daemon_options.append('--sslport ' + (ssl_port | string)) -%}
 {%- endif -%}
-{%- if (torrserver_ssl_cert_path | default('')) | trim -%}
-{%- set _ = daemon_options.append('--sslcert ' + torrserver_ssl_cert_path) -%}
+{%- set ssl_cert = (torrserver_ssl_cert_path | default('')) | trim -%}
+{%- if ssl_cert -%}
+{%- set _ = daemon_options.append('--sslcert ' + (ssl_cert | string)) -%}
 {%- endif -%}
-{%- if (torrserver_ssl_key_path | default('')) | trim -%}
-{%- set _ = daemon_options.append('--sslkey ' + torrserver_ssl_key_path) -%}
+{%- set ssl_key = (torrserver_ssl_key_path | default('')) | trim -%}
+{%- if ssl_key -%}
+{%- set _ = daemon_options.append('--sslkey ' + (ssl_key | string)) -%}
 {%- endif -%}
 {%- if torrserver_dontkill | bool -%}
 {%- set _ = daemon_options.append('--dontkill') -%}
 {%- endif -%}
-{%- if (torrserver_torrents_dir | default('')) | trim -%}
-{%- set _ = daemon_options.append('--torrentsdir ' + torrserver_torrents_dir) -%}
+{%- set torrents_dir = (torrserver_torrents_dir | default('')) | trim -%}
+{%- if torrents_dir -%}
+{%- set _ = daemon_options.append('--torrentsdir ' + (torrents_dir | string)) -%}
 {%- endif -%}
-{%- if (torrserver_torrent_addr | default('')) | trim -%}
-{%- set _ = daemon_options.append('--torrentaddr ' + torrserver_torrent_addr) -%}
+{%- set torrent_addr = (torrserver_torrent_addr | default('')) | trim -%}
+{%- if torrent_addr -%}
+{%- set _ = daemon_options.append('--torrentaddr ' + (torrent_addr | string)) -%}
 {%- endif -%}
-{%- if (torrserver_pubipv4 | default('')) | trim -%}
-{%- set _ = daemon_options.append('--pubipv4 ' + torrserver_pubipv4) -%}
+{%- set pubipv4 = (torrserver_pubipv4 | default('')) | trim -%}
+{%- if pubipv4 -%}
+{%- set _ = daemon_options.append('--pubipv4 ' + (pubipv4 | string)) -%}
 {%- endif -%}
-{%- if (torrserver_pubipv6 | default('')) | trim -%}
-{%- set _ = daemon_options.append('--pubipv6 ' + torrserver_pubipv6) -%}
+{%- set pubipv6 = (torrserver_pubipv6 | default('')) | trim -%}
+{%- if pubipv6 -%}
+{%- set _ = daemon_options.append('--pubipv6 ' + (pubipv6 | string)) -%}
 {%- endif -%}
 {%- if torrserver_searchwa | bool -%}
 {%- set _ = daemon_options.append('--searchwa') -%}
