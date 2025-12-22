@@ -1,20 +1,7 @@
 ---
-- name: install | Get latest version tag
-  ansible.builtin.uri:
-    url: "{{ torrserver_api_url }}/releases/latest"
-    return_content: true
-  register: latest_release
-  when: torrserver_version == 'latest'
-
-- name: install | Set target version tag (latest)
+- name: install | Set installation method fact
   ansible.builtin.set_fact:
-    torrserver_target_tag: "{{ latest_release.json.tag_name }}"
-  when: torrserver_version == 'latest'
-
-- name: install | Set target version tag (specific)
-  ansible.builtin.set_fact:
-    torrserver_target_tag: "MatriX.{{ torrserver_version }}"
-  when: torrserver_version != 'latest'
+    torrserver_use_local: "{{ torrserver_local_file is defined and torrserver_local_file != '' and torrserver_local_file is not none }}"
 
 - name: install | Check installed version
   ansible.builtin.command: "{{ torrserver_install_dir }}/{{ torrserver_bin_prefix }}-{{ architecture }} --version"
@@ -27,31 +14,10 @@
     torrserver_installed_tag: "{{ installed_version_cmd.stdout | regex_search('MatriX\\.\\d+') }}"
   when: installed_version_cmd.rc == 0
 
-- name: install | Check glibc version
-  ansible.builtin.command: ldd --version
-  register: ldd_version_cmd
-  changed_when: false
+- name: install | Install from local file
+  ansible.builtin.include_tasks: install_local.yml
+  when: torrserver_use_local | bool
 
-- name: install | Set glibc version fact
-  ansible.builtin.set_fact:
-    glibc_version: "{{ ldd_version_cmd.stdout_lines[0] | regex_search('\\d+\\.\\d+') }}"
-
-- name: install | Fail if glibc version is too old for newer TorrServer
-  ansible.builtin.fail:
-    msg: >-
-      TorrServer version {{ torrserver_target_tag }} requires glibc >= 2.32.
-      Current version is {{ glibc_version }}.
-  when:
-    - torrserver_target_tag | regex_replace('MatriX\\.', '') | int >= 136
-    - glibc_version is version('2.32', '<')
-
-- name: install | Download torrserver binary
-  ansible.builtin.get_url:
-    url: >-
-      {{ torrserver_repo_url }}/releases/download/{{ torrserver_target_tag }}/{{ torrserver_bin_prefix }}-{{ architecture }}
-    dest: "{{ torrserver_install_dir }}/{{ torrserver_bin_prefix }}-{{ architecture }}"
-    mode: "0755"
-    owner: "{{ torrserver_user }}"
-    group: "{{ torrserver_group }}"
-  when: torrserver_installed_tag is not defined or torrserver_installed_tag != torrserver_target_tag
-  notify: Restart torrserver
+- name: install | Install from remote repository
+  ansible.builtin.include_tasks: install_remote.yml
+  when: not (torrserver_use_local | bool)

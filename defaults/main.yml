@@ -45,6 +45,11 @@ torrserver_bin_prefix: TorrServer-linux
 torrserver_repo_url: https://github.com/YouROK/TorrServer
 torrserver_api_url: https://api.github.com/repos/YouROK/TorrServer
 
+# Local installation option
+# If set, the role will copy the binary from this local path instead of downloading
+# Example: /path/to/TorrServer-linux-amd64
+torrserver_local_file: null
+
 # BitTorr settings (settings.json)
 # Override any of these settings by defining torrserver_bittorr_settings in your playbook
 torrserver_bittorr_settings: {}
