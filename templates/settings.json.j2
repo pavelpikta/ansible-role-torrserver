@@ -1,0 +1,8 @@
+{%- set merged_settings = torrserver_bittorr_defaults | combine(torrserver_bittorr_settings | default({}), recursive=True) -%}
+{
+  "BitTorr": {
+{%- for key, value in merged_settings | dictsort %}
+    "{{ key }}": {{ value | to_json }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+  }
+}

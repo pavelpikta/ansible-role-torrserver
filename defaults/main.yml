@@ -44,3 +44,40 @@ torrserver_enable_bbr: true
 torrserver_bin_prefix: TorrServer-linux
 torrserver_repo_url: https://github.com/YouROK/TorrServer
 torrserver_api_url: https://api.github.com/repos/YouROK/TorrServer
+
+# BitTorr settings (settings.json)
+# Override any of these settings by defining torrserver_bittorr_settings in your playbook
+torrserver_bittorr_settings: {}
+# Default BitTorr settings (used as base, merged with torrserver_bittorr_settings)
+torrserver_bittorr_defaults:
+  CacheSize: 64
+  ConnectionsLimit: 25
+  DisableDHT: false
+  DisablePEX: false
+  DisableTCP: false
+  DisableUPNP: false
+  DisableUTP: false
+  DisableUpload: false
+  DownloadRateLimit: 0
+  EnableDLNA: false
+  EnableDebug: false
+  EnableIPv6: false
+  EnableRutorSearch: false
+  # EnableTorznabSearch: false
+  ForceEncrypt: false
+  FriendlyName: ""
+  PeersListenPort: 0
+  PreloadCache: 50
+  ReaderReadAHead: 95
+  RemoveCacheOnDrop: false
+  ResponsiveMode: false
+  RetrackersMode: 1
+  # ShowFSActiveTorr: false
+  SslCert: ""
+  SslKey: ""
+  SslPort: 0
+  TorrentDisconnectTimeout: 30
+  TorrentsSavePath: ""
+  # TorznabUrls: []
+  UploadRateLimit: 0
+  UseDisk: false

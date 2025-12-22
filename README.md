@@ -15,6 +15,7 @@ An Ansible role that installs and configures [TorrServer](https://github.com/You
 - Support for multiple architectures (amd64, arm64, arm7, arm5, 386).
 - HTTP Authentication support.
 - Read-only database mode support.
+- BitTorr settings configuration via `settings.json` with merge support.
 
 ## Requirements
 
@@ -53,6 +54,58 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_searchwa` | `false` | Allow search without authentication (`--searchwa`). |
 | `torrserver_enable_bbr` | `true` | Enable BBR congestion control for better streaming performance. |
 
+### BitTorr Settings
+
+The role supports configuration of BitTorr settings via `settings.json`. You can override any default setting by defining `torrserver_bittorr_settings` in your playbook. The role will merge your custom settings with the defaults.
+
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `torrserver_bittorr_settings` | `{}` | Dictionary of BitTorr settings to override. See below for available settings. |
+| `torrserver_bittorr_defaults` | See `defaults/main.yml` | Default BitTorr settings (internal use). |
+
+**Available BitTorr Settings:**
+
+- `CacheSize` (integer): Cache size in MB. Default: `64`
+- `ConnectionsLimit` (integer): Maximum number of connections. Default: `25`
+- `DisableDHT` (boolean): Disable DHT. Default: `false`
+- `DisablePEX` (boolean): Disable PEX. Default: `false`
+- `DisableTCP` (boolean): Disable TCP. Default: `false`
+- `DisableUPNP` (boolean): Disable UPNP. Default: `false`
+- `DisableUTP` (boolean): Disable UTP. Default: `false`
+- `DisableUpload` (boolean): Disable upload. Default: `false`
+- `DownloadRateLimit` (integer): Download rate limit in bytes/sec (0 = unlimited). Default: `0`
+- `EnableDLNA` (boolean): Enable DLNA. Default: `false`
+- `EnableDebug` (boolean): Enable debug mode. Default: `false`
+- `EnableIPv6` (boolean): Enable IPv6. Default: `false`
+- `EnableRutorSearch` (boolean): Enable Rutor search. Default: `false`
+- `EnableTorznabSearch` (boolean): Enable Torznab search. Default: `false` # Not supported by Matrix.136
+- `ForceEncrypt` (boolean): Force encryption. Default: `false`
+- `FriendlyName` (string): Friendly name. Default: `""`
+- `PeersListenPort` (integer): Peers listen port (0 = auto). Default: `0`
+- `PreloadCache` (integer): Preload cache percentage. Default: `50`
+- `ReaderReadAHead` (integer): Reader read ahead percentage. Default: `95`
+- `RemoveCacheOnDrop` (boolean): Remove cache on drop. Default: `false`
+- `ResponsiveMode` (boolean): Responsive mode. Default: `false`
+- `RetrackersMode` (integer): Retrackers mode. Default: `1`
+- `ShowFSActiveTorr` (boolean): Show filesystem active torrents. Default: `false` # Not supported by Matrix.136
+- `SslCert` (string): SSL certificate path. Default: `""`
+- `SslKey` (string): SSL key path. Default: `""`
+- `SslPort` (integer): SSL port. Default: `0`
+- `TorrentDisconnectTimeout` (integer): Torrent disconnect timeout in seconds. Default: `30`
+- `TorrentsSavePath` (string): Torrents save path. Default: `""`
+- `TorznabUrls` (list): List of Torznab URLs. Default: `[]`  # Not supported by Matrix.136
+- `UploadRateLimit` (integer): Upload rate limit in bytes/sec (0 = unlimited). Default: `0`
+- `UseDisk` (boolean): Use disk for cache. Default: `false`
+
+**TorznabUrls format:**
+
+```yaml
+TorznabUrls:
+  - Host: "https://example.com/api/torznab/"
+    Key: "your-api-key"
+    Name: "jackett"
+```
+
 ### Advanced Variables
 
 | Variable | Default Value | Description |
@@ -67,6 +120,8 @@ None.
 
 ## Example Playbook
 
+### Basic Example
+
 ```yaml
 - hosts: all
   roles:
@@ -77,6 +132,27 @@ None.
         torrserver_enable_auth: true
         torrserver_auth_users:
           admin: "your_secure_password"
+```
+
+### Example with BitTorr Settings
+
+```yaml
+- hosts: all
+  roles:
+    - role: pavelpikta.torrserver
+      vars:
+        torrserver_version: latest
+        torrserver_port: 8090
+        torrserver_bittorr_settings:
+          CacheSize: 256
+          ConnectionsLimit: 100
+          # EnableTorznabSearch: true  # Not supported by Matrix.136
+          ForceEncrypt: true
+          PeersListenPort: 32000
+          # TorznabUrls:
+          #   - Host: "https://jackett.example.com/api/v2.0/indexers/all/results/torznab/"
+          #     Key: "your-api-key"
+          #     Name: "jackett"
 ```
 
 ## Supported Platforms
