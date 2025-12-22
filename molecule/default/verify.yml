@@ -4,17 +4,22 @@
   gather_facts: true
   vars:
     torrserver_service_name: torrserver
+    torrserver_port: 8090
   tasks:
-    - name: Get torrserver service status
-      ansible.builtin.systemd:
-        name: "{{ torrserver_service_name }}"
-      register: torrserver_status
+    - name: Check torrserver echo endpoint
+      ansible.builtin.uri:
+        url: "http://localhost:{{ torrserver_port }}/echo"
+        method: GET
+        status_code: [200]
+      register: torrserver_echo
+      retries: 5
+      delay: 2
 
-    - name: Assert torrserver service is running
+    - name: Assert torrserver echo returns MatriX version
       ansible.builtin.assert:
         that:
-          - torrserver_status.status is defined
-          - torrserver_status.status.ActiveState == 'active'
-          - torrserver_status.status.SubState == 'running'
-        fail_msg: "torrserver service is not active/running (ActiveState: {{ torrserver_status.status.ActiveState | default('unknown') }}, SubState: {{ torrserver_status.status.SubState | default('unknown') }})"
-        success_msg: "torrserver service confirmed active and running"
+          - torrserver_echo.status == 200
+          - torrserver_echo.content is defined
+          - "'MatriX' in torrserver_echo.content"
+        fail_msg: "torrserver echo endpoint did not return MatriX version (status: {{ torrserver_echo.status | default('unknown') }}, content: {{ torrserver_echo.content | default('empty') | truncate(100) }})"
+        success_msg: "torrserver echo endpoint confirmed working - returned: {{ torrserver_echo.content | trim }}"

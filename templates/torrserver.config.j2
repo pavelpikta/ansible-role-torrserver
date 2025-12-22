@@ -1,16 +1,46 @@
-DAEMON_OPTIONS="--port {{ torrserver_port }} \
---path {{ torrserver_install_dir }}\
-{%- if torrserver_read_only | bool %} --rdb\{% endif %}
-{%- if torrserver_enable_log | bool %} --logpath {{ torrserver_log_path }}\{% endif %}
-{%- if (torrserver_weblog_path | default('')) | trim %} --weblogpath {{ torrserver_weblog_path }}\{% endif %}
-{%- if torrserver_enable_auth | bool %} --httpauth\{% endif %}
-{%- if torrserver_ssl_enable | bool %} --ssl\{% endif %}
-{%- if torrserver_ssl_enable | bool and (torrserver_ssl_port | default('')) | trim %} --sslport {{ torrserver_ssl_port }}\{% endif %}
-{%- if (torrserver_ssl_cert_path | default('')) | trim %} --sslcert {{ torrserver_ssl_cert_path }}\{% endif %}
-{%- if (torrserver_ssl_key_path | default('')) | trim %} --sslkey {{ torrserver_ssl_key_path }}\{% endif %}
-{%- if torrserver_dontkill | bool %} --dontkill\{% endif %}
-{%- if (torrserver_torrents_dir | default('')) | trim %} --torrentsdir {{ torrserver_torrents_dir }}\{% endif %}
-{%- if (torrserver_torrent_addr | default('')) | trim %} --torrentaddr {{ torrserver_torrent_addr }}\{% endif %}
-{%- if (torrserver_pubipv4 | default('')) | trim %} --pubipv4 {{ torrserver_pubipv4 }}\{% endif %}
-{%- if (torrserver_pubipv6 | default('')) | trim %} --pubipv6 {{ torrserver_pubipv6 }}\{% endif %}
-{%- if torrserver_searchwa | bool %} --searchwa{% endif %}"
+{%- set daemon_options = [] -%}
+{%- set _ = daemon_options.append('--port ' + torrserver_port | string) -%}
+{%- set _ = daemon_options.append('--path ' + torrserver_install_dir) -%}
+{%- if torrserver_read_only | bool -%}
+{%- set _ = daemon_options.append('--rdb') -%}
+{%- endif -%}
+{%- if torrserver_enable_log | bool -%}
+{%- set _ = daemon_options.append('--logpath ' + torrserver_log_path) -%}
+{%- endif -%}
+{%- if (torrserver_weblog_path | default('')) | trim -%}
+{%- set _ = daemon_options.append('--weblogpath ' + torrserver_weblog_path) -%}
+{%- endif -%}
+{%- if torrserver_enable_auth | bool -%}
+{%- set _ = daemon_options.append('--httpauth') -%}
+{%- endif -%}
+{%- if torrserver_ssl_enable | bool -%}
+{%- set _ = daemon_options.append('--ssl') -%}
+{%- endif -%}
+{%- if torrserver_ssl_enable | bool and (torrserver_ssl_port | default('')) | trim -%}
+{%- set _ = daemon_options.append('--sslport ' + torrserver_ssl_port | string) -%}
+{%- endif -%}
+{%- if (torrserver_ssl_cert_path | default('')) | trim -%}
+{%- set _ = daemon_options.append('--sslcert ' + torrserver_ssl_cert_path) -%}
+{%- endif -%}
+{%- if (torrserver_ssl_key_path | default('')) | trim -%}
+{%- set _ = daemon_options.append('--sslkey ' + torrserver_ssl_key_path) -%}
+{%- endif -%}
+{%- if torrserver_dontkill | bool -%}
+{%- set _ = daemon_options.append('--dontkill') -%}
+{%- endif -%}
+{%- if (torrserver_torrents_dir | default('')) | trim -%}
+{%- set _ = daemon_options.append('--torrentsdir ' + torrserver_torrents_dir) -%}
+{%- endif -%}
+{%- if (torrserver_torrent_addr | default('')) | trim -%}
+{%- set _ = daemon_options.append('--torrentaddr ' + torrserver_torrent_addr) -%}
+{%- endif -%}
+{%- if (torrserver_pubipv4 | default('')) | trim -%}
+{%- set _ = daemon_options.append('--pubipv4 ' + torrserver_pubipv4) -%}
+{%- endif -%}
+{%- if (torrserver_pubipv6 | default('')) | trim -%}
+{%- set _ = daemon_options.append('--pubipv6 ' + torrserver_pubipv6) -%}
+{%- endif -%}
+{%- if torrserver_searchwa | bool -%}
+{%- set _ = daemon_options.append('--searchwa') -%}
+{%- endif -%}
+DAEMON_OPTIONS="{{ daemon_options | join(' ') }}"
