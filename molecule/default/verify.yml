@@ -8,7 +8,7 @@
   tasks:
     - name: Check torrserver echo endpoint
       ansible.builtin.uri:
-        url: "http://localhost:{{ torrserver_port }}/echo"
+        url: "http://127.0.0.1:{{ torrserver_port }}/echo"
         method: GET
         status_code: [200]
       register: torrserver_echo
