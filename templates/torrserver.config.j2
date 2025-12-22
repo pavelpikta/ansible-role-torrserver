@@ -1,1 +1,46 @@
-DAEMON_OPTIONS="--port {{ torrserver_port }} --path {{ torrserver_install_dir }}{% if torrserver_read_only %} --rdb{% endif %}{% if torrserver_enable_log %} --logpath {{ torrserver_log_path }}{% endif %}{% if torrserver_enable_auth %} --httpauth{% endif %}"
+{%- set daemon_options = [] -%}
+{%- set _ = daemon_options.append('--port ' + (torrserver_port | default('') | string)) -%}
+{%- set _ = daemon_options.append('--path ' + (torrserver_install_dir | default('') | string)) -%}
+{%- if torrserver_read_only | bool -%}
+{%- set _ = daemon_options.append('--rdb') -%}
+{%- endif -%}
+{%- if torrserver_enable_log | bool -%}
+{%- set _ = daemon_options.append('--logpath ' + (torrserver_log_path | default('') | string)) -%}
+{%- endif -%}
+{%- if torrserver_weblog_path is defined and torrserver_weblog_path is not none and (torrserver_weblog_path | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--weblogpath ' + (torrserver_weblog_path | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_enable_auth | bool -%}
+{%- set _ = daemon_options.append('--httpauth') -%}
+{%- endif -%}
+{%- if torrserver_ssl_enable | bool -%}
+{%- set _ = daemon_options.append('--ssl') -%}
+{%- endif -%}
+{%- if torrserver_ssl_enable | bool and torrserver_ssl_port is defined and torrserver_ssl_port is not none and (torrserver_ssl_port | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--sslport ' + (torrserver_ssl_port | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_ssl_cert_path is defined and torrserver_ssl_cert_path is not none and (torrserver_ssl_cert_path | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--sslcert ' + (torrserver_ssl_cert_path | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_ssl_key_path is defined and torrserver_ssl_key_path is not none and (torrserver_ssl_key_path | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--sslkey ' + (torrserver_ssl_key_path | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_dontkill | bool -%}
+{%- set _ = daemon_options.append('--dontkill') -%}
+{%- endif -%}
+{%- if torrserver_torrents_dir is defined and torrserver_torrents_dir is not none and (torrserver_torrents_dir | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--torrentsdir ' + (torrserver_torrents_dir | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_torrent_addr is defined and torrserver_torrent_addr is not none and (torrserver_torrent_addr | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--torrentaddr ' + (torrserver_torrent_addr | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_pubipv4 is defined and torrserver_pubipv4 is not none and (torrserver_pubipv4 | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--pubipv4 ' + (torrserver_pubipv4 | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_pubipv6 is defined and torrserver_pubipv6 is not none and (torrserver_pubipv6 | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--pubipv6 ' + (torrserver_pubipv6 | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_searchwa | bool -%}
+{%- set _ = daemon_options.append('--searchwa') -%}
+{%- endif -%}
+DAEMON_OPTIONS="{{ daemon_options | join(' ') }}"

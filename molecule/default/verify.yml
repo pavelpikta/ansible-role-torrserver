@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  vars:
+    torrserver_service_name: torrserver
+    torrserver_port: 8090
+  tasks:
+    - name: Check torrserver echo endpoint
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ torrserver_port }}/echo"
+        method: GET
+        status_code: [200]
+        return_content: true
+      register: torrserver_echo
+      retries: 5
+      delay: 2
+
+    - name: Assert torrserver echo returns MatriX version
+      ansible.builtin.assert:
+        that:
+          - torrserver_echo.status == 200
+          - torrserver_echo.content is defined
+          - "'MatriX' in torrserver_echo.content"
+        fail_msg: "torrserver echo endpoint did not return MatriX version (status: {{ torrserver_echo.status | default('unknown') }}, content: {{ torrserver_echo.content | default('empty') | truncate(100) }})"
+        success_msg: "torrserver echo endpoint confirmed working - returned: {{ torrserver_echo.content | default('') | trim }}"

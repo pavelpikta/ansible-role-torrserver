@@ -8,6 +8,15 @@
     mode: "0644"
   notify: Restart torrserver
 
+- name: config | Show configuration file
+  ansible.builtin.slurp:
+    src: "{{ torrserver_install_dir }}/{{ torrserver_service_name }}.config"
+  register: config_file_content
+
+- name: config | Display configuration file contents
+  ansible.builtin.debug:
+    msg: "{{ config_file_content.content | b64decode }}"
+
 - name: config | Create authentication file
   ansible.builtin.template:
     src: accs.db.j2
