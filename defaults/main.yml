@@ -55,7 +55,7 @@ torrserver_local_file: null
 torrserver_bittorr_settings: {}
 # Default BitTorr settings (used as base, merged with torrserver_bittorr_settings)
 torrserver_bittorr_defaults:
-  CacheSize: 64
+  CacheSize: 67108864
   ConnectionsLimit: 25
   DisableDHT: false
   DisablePEX: false
@@ -68,21 +68,23 @@ torrserver_bittorr_defaults:
   EnableDebug: false
   EnableIPv6: false
   EnableRutorSearch: false
-  # EnableTorznabSearch: false
+  EnableTorznabSearch: false
   ForceEncrypt: false
   FriendlyName: ""
   PeersListenPort: 0
   PreloadCache: 50
   ReaderReadAHead: 95
   RemoveCacheOnDrop: false
-  ResponsiveMode: false
+  ResponsiveMode: true
   RetrackersMode: 1
-  # ShowFSActiveTorr: false
+  ShowFSActiveTorr: true
   SslCert: ""
   SslKey: ""
   SslPort: 0
+  StoreSettingsInJson: true
+  StoreViewedInJson: false
   TorrentDisconnectTimeout: 30
   TorrentsSavePath: ""
-  # TorznabUrls: []
+  TorznabUrls: null
   UploadRateLimit: 0
   UseDisk: false
