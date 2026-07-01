@@ -4,6 +4,7 @@ torrserver_user: torrserver
 torrserver_group: torrserver
 torrserver_install_dir: /opt/torrserver
 torrserver_port: 8090
+torrserver_ip: null
 torrserver_service_name: torrserver
 
 # Configuration options
@@ -36,6 +37,18 @@ torrserver_pubipv6: null
 
 # Search options
 torrserver_searchwa: false
+
+# Stream and integration options
+torrserver_max_size: null
+torrserver_tg_token: null
+torrserver_fuse_path: null
+torrserver_webdav: false
+torrserver_ui: false
+
+# Proxy options
+torrserver_proxy_url: null
+torrserver_proxy_mode: null
+torrserver_force_https: false
 
 # Performance
 torrserver_enable_bbr: true
@@ -88,3 +101,16 @@ torrserver_bittorr_defaults:
   TorznabUrls: null
   UploadRateLimit: 0
   UseDisk: false
+  EnableLPD: true
+  LPDIPv6: false
+  TrackTimecode: false
+  EnableProxy: false
+  ProxyHosts:
+    - "*themoviedb.org"
+    - "*tmdb.org"
+    - "rutor.info"
+  TMDBSettings:
+    APIKey: ""
+    APIURL: "https://api.themoviedb.org"
+    ImageURL: "https://image.tmdb.org"
+    ImageURLRu: "https://imagetmdb.com"

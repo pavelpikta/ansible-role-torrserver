@@ -16,6 +16,7 @@ An Ansible role that installs and configures [TorrServer](https://github.com/You
 - Support for multiple architectures (amd64, arm64, arm7, arm5, 386).
 - HTTP Authentication support.
 - Read-only database mode support.
+- Proxy, WebDAV, FUSE, Telegram bot, and HTTPS redirect support.
 - BitTorr settings configuration via `settings.json` with merge support.
 
 ## Requirements
@@ -37,6 +38,7 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_group` | `torrserver` | System group for TorrServer. |
 | `torrserver_install_dir` | `/opt/torrserver` | Directory where TorrServer will be installed. |
 | `torrserver_port` | `8090` | Port for TorrServer web interface (`--port`). |
+| `torrserver_ip` | `null` | Bind address for the web server (`--ip`). |
 | `torrserver_service_name` | `torrserver` | Name of the systemd service. |
 | `torrserver_read_only` | `false` | Enable read-only database mode (`--rdb`). |
 | `torrserver_enable_log` | `false` | Enable logging to file. |
@@ -54,6 +56,14 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_pubipv4` | `null` | Set public IPv4 address (`--pubipv4`). |
 | `torrserver_pubipv6` | `null` | Set public IPv6 address (`--pubipv6`). |
 | `torrserver_searchwa` | `false` | Allow search without authentication (`--searchwa`). |
+| `torrserver_max_size` | `null` | Maximum allowed stream size in bytes (`--maxsize`). |
+| `torrserver_tg_token` | `null` | Telegram bot token (`--tgtoken`). |
+| `torrserver_fuse_path` | `null` | FUSE mount path (`--fusepath`). |
+| `torrserver_webdav` | `false` | Enable WebDAV (`--webdav`). |
+| `torrserver_ui` | `false` | Open TorrServer page in browser on start (`--ui`). |
+| `torrserver_proxy_url` | `null` | Proxy URL for BitTorrent traffic (`--proxyurl`). Supports `http`, `socks4`, `socks5`, and `socks5h`. |
+| `torrserver_proxy_mode` | `null` | Proxy mode (`--proxymode`): `tracker` (HTTP trackers only, default), `peers` (peer connections only), or `full` (all traffic). |
+| `torrserver_force_https` | `false` | Redirect all HTTP requests to HTTPS (`--force-https`). Requires `torrserver_ssl_enable: true`. |
 | `torrserver_enable_bbr` | `true` | Enable BBR congestion control for better streaming performance. |
 
 ### BitTorr Settings
@@ -100,6 +110,22 @@ The role supports configuration of BitTorr settings via `settings.json`. You can
 - `TorznabUrls` (list/null): List of Torznab URLs. Default: `null`
 - `UploadRateLimit` (integer): Upload rate limit in bytes/sec (0 = unlimited). Default: `0`
 - `UseDisk` (boolean): Use disk for cache. Default: `false`
+- `EnableLPD` (boolean): Enable Local Peer Discovery. Default: `true`
+- `LPDIPv6` (boolean): Enable LPD over IPv6. Default: `false`
+- `TrackTimecode` (boolean): Store playback position (timecode) in viewed data. Default: `false`
+- `EnableProxy` (boolean): Enable P2P proxy for configured hosts. Default: `false`
+- `ProxyHosts` (list): Host patterns routed through the P2P proxy. Default: `["*themoviedb.org", "*tmdb.org", "rutor.info"]`
+- `TMDBSettings` (object): TMDB integration settings. Default: see below
+
+**TMDBSettings format:**
+
+```yaml
+TMDBSettings:
+  APIKey: "your-tmdb-api-key"
+  APIURL: "https://api.themoviedb.org"
+  ImageURL: "https://image.tmdb.org"
+  ImageURLRu: "https://imagetmdb.com"
+```
 
 **TorznabUrls format:**
 
@@ -154,6 +180,22 @@ None.
 ```
 
 **Note:** When using `torrserver_local_file`, the `torrserver_version` variable is ignored. The role will copy the specified file to the target host. Make sure the file exists on the Ansible control node and matches the target architecture.
+
+### Example with Proxy and HTTPS
+
+```yaml
+- hosts: all
+  roles:
+    - role: pavelpikta.torrserver
+      vars:
+        torrserver_version: latest
+        torrserver_port: 8090
+        torrserver_ssl_enable: true
+        torrserver_force_https: true
+        torrserver_proxy_url: "socks5://127.0.0.1:1080"
+        torrserver_proxy_mode: tracker
+        torrserver_webdav: true
+```
 
 ### Example with BitTorr Settings
 

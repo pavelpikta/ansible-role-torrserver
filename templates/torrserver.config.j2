@@ -1,5 +1,8 @@
 {%- set daemon_options = [] -%}
 {%- set _ = daemon_options.append('--port ' + (torrserver_port | default('') | string)) -%}
+{%- if torrserver_ip is defined and torrserver_ip is not none and (torrserver_ip | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--ip ' + (torrserver_ip | string | trim)) -%}
+{%- endif -%}
 {%- set _ = daemon_options.append('--path ' + (torrserver_install_dir | default('') | string)) -%}
 {%- if torrserver_read_only | bool -%}
 {%- set _ = daemon_options.append('--rdb') -%}
@@ -42,5 +45,29 @@
 {%- endif -%}
 {%- if torrserver_searchwa | bool -%}
 {%- set _ = daemon_options.append('--searchwa') -%}
+{%- endif -%}
+{%- if torrserver_max_size is defined and torrserver_max_size is not none and (torrserver_max_size | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--maxsize ' + (torrserver_max_size | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_tg_token is defined and torrserver_tg_token is not none and (torrserver_tg_token | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--tgtoken ' + (torrserver_tg_token | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_fuse_path is defined and torrserver_fuse_path is not none and (torrserver_fuse_path | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--fusepath ' + (torrserver_fuse_path | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_webdav | bool -%}
+{%- set _ = daemon_options.append('--webdav') -%}
+{%- endif -%}
+{%- if torrserver_ui | bool -%}
+{%- set _ = daemon_options.append('--ui') -%}
+{%- endif -%}
+{%- if torrserver_proxy_url is defined and torrserver_proxy_url is not none and (torrserver_proxy_url | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--proxyurl ' + (torrserver_proxy_url | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_proxy_mode is defined and torrserver_proxy_mode is not none and (torrserver_proxy_mode | string | trim) != '' -%}
+{%- set _ = daemon_options.append('--proxymode ' + (torrserver_proxy_mode | string | trim)) -%}
+{%- endif -%}
+{%- if torrserver_force_https | bool -%}
+{%- set _ = daemon_options.append('--force-https') -%}
 {%- endif -%}
 DAEMON_OPTIONS="{{ daemon_options | join(' ') }}"
