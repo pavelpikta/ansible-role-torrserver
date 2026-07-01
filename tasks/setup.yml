@@ -4,16 +4,22 @@
     update_cache: true
     cache_valid_time: 3600
   when: ansible_facts['os_family'] == 'Debian'
+  tags:
+    - dependencies
 
 - name: setup | Update package cache (Archlinux)
   community.general.pacman:
     update_cache: true
   when: ansible_facts['os_family'] == 'Archlinux'
+  tags:
+    - dependencies
 
 - name: setup | Update package cache (RedHat)
   ansible.builtin.dnf:
     update_cache: true
   when: ansible_facts['os_family'] == 'RedHat'
+  tags:
+    - dependencies
 
 - name: setup | Install dependencies
   ansible.builtin.package:
@@ -34,11 +40,15 @@
         bind-utils
         {% endif %}
     state: present
+  tags:
+    - dependencies
 
 - name: setup | Create torrserver group
   ansible.builtin.group:
     name: "{{ torrserver_group }}"
     system: true
+  tags:
+    - user
 
 - name: setup | Create torrserver user
   ansible.builtin.user:
@@ -48,6 +58,8 @@
     create_home: true
     shell: /bin/false
     system: true
+  tags:
+    - user
 
 - name: setup | Ensure install directory exists
   ansible.builtin.file:
@@ -56,3 +68,5 @@
     owner: "{{ torrserver_user }}"
     group: "{{ torrserver_group }}"
     mode: "0755"
+  tags:
+    - user

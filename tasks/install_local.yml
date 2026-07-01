@@ -3,11 +3,15 @@
   ansible.builtin.stat:
     path: "{{ torrserver_local_file }}"
   register: local_file_stat
+  tags:
+    - install_local
 
 - name: install_local | Fail if local file does not exist
   ansible.builtin.fail:
     msg: "Local file '{{ torrserver_local_file }}' does not exist or is not accessible"
   when: not local_file_stat.stat.exists
+  tags:
+    - install_local
 
 - name: install_local | Copy torrserver binary from local file
   ansible.builtin.copy:
@@ -18,3 +22,5 @@
     group: "{{ torrserver_group }}"
     remote_src: false
   notify: Restart torrserver
+  tags:
+    - install_local

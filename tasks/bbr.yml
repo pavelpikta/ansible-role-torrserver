@@ -1,17 +1,23 @@
 ---
 - name: bbr | Configure BBR congestion control
   when: torrserver_enable_bbr
+  tags:
+    - bbr
   block:
     - name: bbr | Load tcp_bbr module
       community.general.modprobe:
         name: tcp_bbr
         state: present
+      tags:
+        - bbr
 
     - name: bbr | Ensure tcp_bbr loads on boot
       ansible.builtin.copy:
         content: "tcp_bbr"
         dest: /etc/modules-load.d/bbr.conf
         mode: "0644"
+      tags:
+        - bbr
 
     - name: bbr | Set sysctl parameters for BBR
       ansible.posix.sysctl:
@@ -23,3 +29,5 @@
       loop:
         - { name: "net.core.default_qdisc", value: "fq" }
         - { name: "net.ipv4.tcp_congestion_control", value: "bbr" }
+      tags:
+        - bbr

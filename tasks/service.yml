@@ -5,6 +5,8 @@
     dest: /etc/systemd/system/{{ torrserver_service_name }}.service
     mode: "0644"
   notify: Restart torrserver
+  tags:
+    - systemd
 
 - name: service | Enable and start torrserver service
   ansible.builtin.systemd:
@@ -12,3 +14,5 @@
     enabled: true
     state: started
     daemon_reload: true
+  tags:
+    - systemd
