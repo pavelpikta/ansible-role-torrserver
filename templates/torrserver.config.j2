@@ -67,7 +67,7 @@
 {%- if torrserver_proxy_mode is defined and torrserver_proxy_mode is not none and (torrserver_proxy_mode | string | trim) != '' -%}
 {%- set _ = daemon_options.append('--proxymode ' + (torrserver_proxy_mode | string | trim)) -%}
 {%- endif -%}
-{%- if torrserver_force_https | bool -%}
+{%- if torrserver_ssl_enable | bool and torrserver_force_https | bool -%}
 {%- set _ = daemon_options.append('--force-https') -%}
 {%- endif -%}
 DAEMON_OPTIONS="{{ daemon_options | join(' ') }}"
