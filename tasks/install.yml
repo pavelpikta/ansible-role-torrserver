@@ -23,13 +23,21 @@
 - name: install | Install from local file
   ansible.builtin.include_tasks:
     file: install_local.yml
-    apply_tags:
-      - install_local
+    apply:
+      tags:
+        - torrserver
+        - install
+        - install_local
+  tags: always
   when: torrserver_use_local | bool
 
 - name: install | Install from remote repository
   ansible.builtin.include_tasks:
     file: install_remote.yml
-    apply_tags:
-      - install_remote
+    apply:
+      tags:
+        - torrserver
+        - install
+        - install_remote
+  tags: always
   when: not (torrserver_use_local | bool)
