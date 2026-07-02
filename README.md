@@ -60,7 +60,6 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_max_size` | `null` | Maximum allowed stream size in bytes (`--maxsize`). |
 | `torrserver_tg_token` | `null` | Telegram bot token (`--tgtoken`). |
 | `torrserver_tg_config` | `{}` | Telegram bot settings for `tg.cfg`. See [Telegram configuration](#telegram-configuration). |
-| `torrserver_tg_config_host` | `{}` | Per-host Telegram overrides merged on top of `torrserver_tg_config`. |
 | `torrserver_fuse_path` | `null` | FUSE mount path (`--fusepath`). |
 | `torrserver_webdav` | `false` | Enable WebDAV (`--webdav`). |
 | `torrserver_ui` | `false` | Open TorrServer page in browser on start (`--ui`). |
@@ -159,7 +158,7 @@ TorznabUrls:
 
 ### Telegram configuration
 
-When `torrserver_tg_token` is set, the role deploys `tg.cfg` in the TorrServer data directory. Override defaults via `torrserver_tg_config` in group vars or `torrserver_tg_config_host` in host vars.
+When `torrserver_tg_token` is set, the role deploys `tg.cfg` in the TorrServer data directory. Set only the keys you want to override in `torrserver_tg_config`.
 
 | Field | Default | Description |
 |-------|---------|-------------|

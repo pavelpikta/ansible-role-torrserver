@@ -13,17 +13,6 @@ torrserver_bittorr_effective_settings: >-
   {{ torrserver_bittorr_settings | default({})
      | combine(torrserver_bittorr_settings_host | default({}), recursive=True) }}
 
-torrserver_tg_effective_config: >-
-  {{ torrserver_tg_config | default({})
-     | combine(torrserver_tg_config_host | default({}), recursive=True) }}
-
-torrserver_tg_config_key_order:
-  - HostTG
-  - HostWeb
-  - WhiteIds
-  - BlackIds
-  - Socks5
-
 # Minimum TorrServer MatriX version required for CLI flags and BitTorr settings.
 # Versions use MatriX numbering (e.g. 141.10 for MatriX.141.10).
 torrserver_feature_versions:

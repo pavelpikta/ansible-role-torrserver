@@ -1,12 +1,20 @@
-{%- set merged_config = torrserver_tg_defaults | combine(torrserver_tg_effective_config, recursive=True) -%}
+{%- set tg_defaults = {
+  'HostTG': 'https://api.telegram.org',
+  'HostWeb': '',
+  'WhiteIds': [],
+  'BlackIds': [],
+  'Socks5': ''
+} -%}
+{%- set key_order = ['HostTG', 'HostWeb', 'WhiteIds', 'BlackIds', 'Socks5'] -%}
+{%- set merged_config = tg_defaults | combine(torrserver_tg_config | default({}), recursive=True) -%}
 {%- set ordered = {} -%}
-{%- for key in torrserver_tg_config_key_order -%}
+{%- for key in key_order -%}
 {%- if key in merged_config and (key != 'Socks5' or (merged_config[key] | string | trim) != '') -%}
 {%- set _ = ordered.update({key: merged_config[key]}) -%}
 {%- endif -%}
 {%- endfor -%}
 {%- for key in merged_config.keys() | sort -%}
-{%- if key not in torrserver_tg_config_key_order -%}
+{%- if key not in key_order -%}
 {%- set _ = ordered.update({key: merged_config[key]}) -%}
 {%- endif -%}
 {%- endfor -%}
