@@ -9,6 +9,55 @@ torrserver_arch_map:
 
 architecture: "{{ torrserver_arch_map[ansible_facts['architecture']] | default('amd64') }}"
 
+# Internal BitTorr defaults merged under torrserver_bittorr_settings / torrserver_bittorr_settings_host.
+torrserver_bittorr_defaults:
+  CacheSize: 67108864
+  ConnectionsLimit: 25
+  DisableDHT: false
+  DisablePEX: false
+  DisableTCP: false
+  DisableUPNP: false
+  DisableUTP: false
+  DisableUpload: false
+  DownloadRateLimit: 0
+  EnableDLNA: false
+  EnableDebug: false
+  EnableIPv6: false
+  EnableRutorSearch: false
+  EnableTorznabSearch: false
+  ForceEncrypt: false
+  FriendlyName: ""
+  PeersListenPort: 0
+  PreloadCache: 50
+  ReaderReadAHead: 95
+  RemoveCacheOnDrop: false
+  ResponsiveMode: true
+  RetrackersMode: 1
+  ShowFSActiveTorr: true
+  SslCert: ""
+  SslKey: ""
+  SslPort: 0
+  StoreSettingsInJson: true
+  StoreViewedInJson: false
+  TorrentDisconnectTimeout: 30
+  TorrentsSavePath: ""
+  TorznabUrls: null
+  UploadRateLimit: 0
+  UseDisk: false
+  EnableLPD: true
+  LPDIPv6: false
+  TrackTimecode: false
+  EnableProxy: false
+  ProxyHosts:
+    - "*themoviedb.org"
+    - "*tmdb.org"
+    - "rutor.info"
+  TMDBSettings:
+    APIKey: ""
+    APIURL: "https://api.themoviedb.org"
+    ImageURL: "https://image.tmdb.org"
+    ImageURLRu: "https://imagetmdb.com"
+
 torrserver_bittorr_effective_settings: >-
   {{ torrserver_bittorr_settings | default({})
      | combine(torrserver_bittorr_settings_host | default({}), recursive=True) }}

@@ -85,15 +85,14 @@ All other documented CLI flags and BitTorr settings are available on older Matri
 
 ### BitTorr Settings
 
-The role supports configuration of BitTorr settings via `settings.json`. You can override any default setting by defining `torrserver_bittorr_settings` in your playbook or group vars. The role will merge your custom settings with the defaults.
+The role supports configuration of BitTorr settings via `settings.json`. Set only the keys you want to change in `torrserver_bittorr_settings`; the role merges them with built-in defaults.
 
-Use `torrserver_bittorr_settings_host` in `host_vars` for per-host overrides. It is merged on top of `torrserver_bittorr_settings` without replacing the group dictionary.
+Use `torrserver_bittorr_settings_host` in `host_vars` for per-host partial overrides. It is merged on top of `torrserver_bittorr_settings` without replacing the group dictionary. This is required because Ansible replaces whole dictionaries across inventory levels — without `_host`, a host would lose group settings.
 
 | Variable | Default Value | Description |
 |----------|---------------|-------------|
-| `torrserver_bittorr_settings` | `{}` | Dictionary of BitTorr settings to override. See below for available settings. |
-| `torrserver_bittorr_settings_host` | `{}` | Per-host BitTorr overrides merged on top of `torrserver_bittorr_settings`. |
-| `torrserver_bittorr_defaults` | See `defaults/main.yml` | Default BitTorr settings (internal use). |
+| `torrserver_bittorr_settings` | `{}` | BitTorr settings to override. See below for available settings. |
+| `torrserver_bittorr_settings_host` | `{}` | Per-host partial overrides merged on top of `torrserver_bittorr_settings`. |
 
 **Available BitTorr Settings:**
 

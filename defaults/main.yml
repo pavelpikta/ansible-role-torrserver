@@ -71,56 +71,7 @@ torrserver_api_url: https://api.github.com/repos/YouROK/TorrServer
 torrserver_local_file: null
 torrserver_use_local: "{{ torrserver_local_file is defined and torrserver_local_file is not none and (torrserver_local_file | string | trim) != '' }}"
 
-# BitTorr settings (settings.json)
-# Override any of these settings by defining torrserver_bittorr_settings in your playbook
+# BitTorr settings (settings.json); set only keys you need to override
 torrserver_bittorr_settings: {}
-# Per-host BitTorr overrides (merged on top of torrserver_bittorr_settings; use in host_vars)
+# Per-host partial overrides (merged on top of torrserver_bittorr_settings)
 torrserver_bittorr_settings_host: {}
-# Default BitTorr settings (used as base, merged with torrserver_bittorr_settings)
-torrserver_bittorr_defaults:
-  CacheSize: 67108864
-  ConnectionsLimit: 25
-  DisableDHT: false
-  DisablePEX: false
-  DisableTCP: false
-  DisableUPNP: false
-  DisableUTP: false
-  DisableUpload: false
-  DownloadRateLimit: 0
-  EnableDLNA: false
-  EnableDebug: false
-  EnableIPv6: false
-  EnableRutorSearch: false
-  EnableTorznabSearch: false
-  ForceEncrypt: false
-  FriendlyName: ""
-  PeersListenPort: 0
-  PreloadCache: 50
-  ReaderReadAHead: 95
-  RemoveCacheOnDrop: false
-  ResponsiveMode: true
-  RetrackersMode: 1
-  ShowFSActiveTorr: true
-  SslCert: ""
-  SslKey: ""
-  SslPort: 0
-  StoreSettingsInJson: true
-  StoreViewedInJson: false
-  TorrentDisconnectTimeout: 30
-  TorrentsSavePath: ""
-  TorznabUrls: null
-  UploadRateLimit: 0
-  UseDisk: false
-  EnableLPD: true
-  LPDIPv6: false
-  TrackTimecode: false
-  EnableProxy: false
-  ProxyHosts:
-    - "*themoviedb.org"
-    - "*tmdb.org"
-    - "rutor.info"
-  TMDBSettings:
-    APIKey: ""
-    APIURL: "https://api.themoviedb.org"
-    ImageURL: "https://image.tmdb.org"
-    ImageURLRu: "https://imagetmdb.com"
