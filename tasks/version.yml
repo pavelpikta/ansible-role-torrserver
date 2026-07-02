@@ -1,0 +1,171 @@
+---
+- name: version | Check if TorrServer binary is present
+  ansible.builtin.stat:
+    path: "{{ torrserver_install_dir }}/{{ torrserver_bin_prefix }}-{{ architecture }}"
+  register: torrserver_binary_stat
+  tags:
+    - version
+
+- name: version | Read installed TorrServer version
+  ansible.builtin.command: "{{ torrserver_install_dir }}/{{ torrserver_bin_prefix }}-{{ architecture }} --version"
+  register: torrserver_version_cmd
+  changed_when: false
+  when: torrserver_binary_stat.stat.exists
+  tags:
+    - version
+
+- name: version | Set effective version from installed binary
+  ansible.builtin.set_fact:
+    torrserver_effective_tag: "{{ torrserver_version_cmd.stdout | regex_search('MatriX\\.\\d+(?:\\.\\d+)?') }}"
+  when:
+    - torrserver_binary_stat.stat.exists
+    - torrserver_version_cmd.rc == 0
+    - torrserver_version_cmd.stdout is search('MatriX')
+  tags:
+    - version
+
+- name: version | Set effective version from install target
+  ansible.builtin.set_fact:
+    torrserver_effective_tag: "{{ torrserver_target_tag }}"
+  when:
+    - torrserver_effective_tag is not defined or (torrserver_effective_tag | string | trim) == ''
+    - torrserver_target_tag is defined
+    - (torrserver_target_tag | string | trim) != ''
+  tags:
+    - version
+
+- name: version | Set effective version from role variable
+  ansible.builtin.set_fact:
+    torrserver_effective_tag: "{{ 'MatriX.' ~ (torrserver_version | string) if torrserver_version != 'latest' else 'MatriX.0' }}"
+  when:
+    - torrserver_effective_tag is not defined or (torrserver_effective_tag | string | trim) == ''
+  tags:
+    - version
+
+- name: version | Normalize sortable version string
+  ansible.builtin.set_fact:
+    torrserver_version_sortable: "{{ torrserver_effective_tag | regex_replace('^MatriX\\.', '') }}"
+  tags:
+    - version
+
+- name: version | Build TorrServer CLI capability map
+  ansible.builtin.set_fact:
+    torrserver_capabilities: >-
+      {{ torrserver_capabilities | default({}) | combine({
+        item.key: (torrserver_version_sortable is version(item.value, '>='))
+      }) }}
+  loop: "{{ torrserver_feature_versions | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  tags:
+    - version
+
+- name: version | Collect unsupported active CLI options
+  ansible.builtin.set_fact:
+    torrserver_unsupported_cli_options: "{{ torrserver_unsupported_cli_options | default([]) + [item] }}"
+  when:
+    - item.active | bool
+    - not (torrserver_capabilities[item.feature] | bool)
+  loop:
+    - feature: ssl
+      option: torrserver_ssl_enable
+      active: "{{ torrserver_ssl_enable | bool }}"
+    - feature: searchwa
+      option: torrserver_searchwa
+      active: "{{ torrserver_searchwa | bool }}"
+    - feature: max_size
+      option: torrserver_max_size
+      active: "{{ torrserver_max_size is defined and torrserver_max_size is not none and (torrserver_max_size | string | trim) != '' }}"
+    - feature: ip
+      option: torrserver_ip
+      active: "{{ torrserver_ip is defined and torrserver_ip is not none and (torrserver_ip | string | trim) != '' }}"
+    - feature: tg_token
+      option: torrserver_tg_token
+      active: "{{ torrserver_tg_token is defined and torrserver_tg_token is not none and (torrserver_tg_token | string | trim) != '' }}"
+    - feature: fuse_path
+      option: torrserver_fuse_path
+      active: "{{ torrserver_fuse_path is defined and torrserver_fuse_path is not none and (torrserver_fuse_path | string | trim) != '' }}"
+    - feature: webdav
+      option: torrserver_webdav
+      active: "{{ torrserver_webdav | bool }}"
+    - feature: proxy_url
+      option: torrserver_proxy_url
+      active: "{{ torrserver_proxy_url is defined and torrserver_proxy_url is not none and (torrserver_proxy_url | string | trim) != '' }}"
+    - feature: proxy_mode
+      option: torrserver_proxy_mode
+      active: "{{ torrserver_proxy_mode is defined and torrserver_proxy_mode is not none and (torrserver_proxy_mode | string | trim) != '' }}"
+    - feature: force_https
+      option: torrserver_force_https
+      active: "{{ torrserver_force_https | bool }}"
+  loop_control:
+    label: "{{ item.option }}"
+  tags:
+    - version
+
+- name: version | Collect unsupported active BitTorr settings
+  ansible.builtin.set_fact:
+    torrserver_unsupported_bittorr_settings: "{{ torrserver_unsupported_bittorr_settings | default([]) + [item.key] }}"
+  when:
+    - item.key in (torrserver_bittorr_settings | default({}))
+    - not (torrserver_version_sortable is version(torrserver_bittorr_feature_versions[item.key], '>='))
+  loop: "{{ torrserver_bittorr_feature_versions | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  tags:
+    - version
+
+- name: version | Warn about unsupported options for installed version
+  ansible.builtin.debug:
+    msg: >-
+      Skipping {{ item.option }}: requires TorrServer >= MatriX.{{ torrserver_feature_versions[item.feature] }}
+      (effective version: {{ torrserver_effective_tag }})
+  loop: "{{ torrserver_unsupported_cli_options | default([]) }}"
+  when:
+    - torrserver_unsupported_cli_options | default([]) | length > 0
+    - not (torrserver_version_strict | bool)
+  loop_control:
+    label: "{{ item.option }}"
+  tags:
+    - version
+
+- name: version | Warn about unsupported BitTorr settings for installed version
+  ansible.builtin.debug:
+    msg: >-
+      Skipping BitTorr setting {{ item }}: requires TorrServer >= MatriX.{{ torrserver_bittorr_feature_versions[item] }}
+      (effective version: {{ torrserver_effective_tag }})
+  loop: "{{ torrserver_unsupported_bittorr_settings | default([]) }}"
+  when:
+    - torrserver_unsupported_bittorr_settings | default([]) | length > 0
+    - not (torrserver_version_strict | bool)
+  loop_control:
+    label: "{{ item }}"
+  tags:
+    - version
+
+- name: version | Fail when strict mode is enabled and CLI options are unsupported
+  ansible.builtin.fail:
+    msg: >-
+      {{ item.option }} requires TorrServer >= MatriX.{{ torrserver_feature_versions[item.feature] }}
+      (effective version: {{ torrserver_effective_tag }}). Set torrserver_version_strict: false to skip unsupported options.
+  loop: "{{ torrserver_unsupported_cli_options | default([]) }}"
+  when:
+    - torrserver_version_strict | bool
+    - torrserver_unsupported_cli_options | default([]) | length > 0
+  loop_control:
+    label: "{{ item.option }}"
+  tags:
+    - version
+
+- name: version | Fail when strict mode is enabled and BitTorr settings are unsupported
+  ansible.builtin.fail:
+    msg: >-
+      BitTorr setting {{ item }} requires TorrServer >= MatriX.{{ torrserver_bittorr_feature_versions[item] }}
+      (effective version: {{ torrserver_effective_tag }}). Set torrserver_version_strict: false to skip unsupported settings.
+  loop: "{{ torrserver_unsupported_bittorr_settings | default([]) }}"
+  when:
+    - torrserver_version_strict | bool
+    - torrserver_unsupported_bittorr_settings | default([]) | length > 0
+  loop_control:
+    label: "{{ item }}"
+  tags:
+    - version

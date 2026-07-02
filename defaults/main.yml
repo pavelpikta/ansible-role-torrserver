@@ -53,6 +53,10 @@ torrserver_force_https: false
 # Performance
 torrserver_enable_bbr: true
 
+# Version handling
+# When true, fail if configured options require a newer TorrServer than the effective version.
+torrserver_version_strict: false
+
 # Advanced
 torrserver_bin_prefix: TorrServer-linux
 torrserver_repo_url: https://github.com/YouROK/TorrServer

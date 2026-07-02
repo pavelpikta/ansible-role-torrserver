@@ -41,7 +41,7 @@
       TorrServer version {{ torrserver_target_tag }} requires glibc >= 2.32.
       Current version is {{ glibc_version }}.
   when:
-    - torrserver_target_tag | regex_replace('MatriX\\.', '') | int >= 136
+    - (torrserver_target_tag | regex_replace('^MatriX\\.', '')) is version('136', '>=')
     - glibc_version is version('2.32', '<')
   tags:
     - install_remote

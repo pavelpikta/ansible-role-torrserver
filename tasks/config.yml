@@ -1,4 +1,14 @@
 ---
+- name: config | Resolve TorrServer version capabilities
+  ansible.builtin.include_tasks:
+    file: version.yml
+    apply:
+      tags:
+        - torrserver
+        - config
+        - version
+  tags: always
+
 - name: config | Create configuration file
   ansible.builtin.template:
     src: torrserver.config.j2

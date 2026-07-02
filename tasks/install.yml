@@ -15,7 +15,7 @@
 
 - name: install | Set installed version fact
   ansible.builtin.set_fact:
-    torrserver_installed_tag: "{{ installed_version_cmd.stdout | regex_search('MatriX\\.\\d+') }}"
+    torrserver_installed_tag: "{{ installed_version_cmd.stdout | regex_search('MatriX\\.\\d+(?:\\.\\d+)?') }}"
   when: installed_version_cmd.rc == 0
   tags:
     - facts

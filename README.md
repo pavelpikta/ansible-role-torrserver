@@ -17,6 +17,7 @@ An Ansible role that installs and configures [TorrServer](https://github.com/You
 - HTTP Authentication support.
 - Read-only database mode support.
 - Proxy, WebDAV, FUSE, Telegram bot, and HTTPS redirect support.
+- Version-aware CLI and BitTorr configuration based on installed TorrServer release.
 - BitTorr settings configuration via `settings.json` with merge support.
 
 ## Requirements
@@ -65,6 +66,21 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_proxy_mode` | `null` | Proxy mode (`--proxymode`): `tracker` (HTTP trackers only, default), `peers` (peer connections only), or `full` (all traffic). |
 | `torrserver_force_https` | `false` | Redirect all HTTP requests to HTTPS (`--force-https`). Requires `torrserver_ssl_enable: true`. |
 | `torrserver_enable_bbr` | `true` | Enable BBR congestion control for better streaming performance. |
+| `torrserver_version_strict` | `false` | Fail when configured options require a newer TorrServer than the effective installed version. When `false`, unsupported options are skipped with a warning. |
+
+### Version compatibility
+
+The role detects the effective TorrServer version from the installed binary (or the install target during first run) and only applies CLI flags and BitTorr settings supported by that version. Unsupported options configured in your playbook are skipped by default; set `torrserver_version_strict: true` to fail instead.
+
+| Minimum version | CLI flags | BitTorr settings |
+|-----------------|-----------|------------------|
+| MatriX.130 | `ssl`, `searchwa`, `maxsize` | — |
+| MatriX.136 | `ip`, `tgtoken` | `ResponsiveMode` |
+| MatriX.137 | `fusepath`, `webdav`, `proxyurl`, `proxymode` | `EnableTorznabSearch`, `TorznabUrls`, `ShowFSActiveTorr`, `StoreSettingsInJson`, `StoreViewedInJson` |
+| MatriX.138 | — | `TMDBSettings`, `EnableProxy`, `ProxyHosts` |
+| MatriX.141.10 | `force-https` | `EnableLPD`, `LPDIPv6`, `TrackTimecode` |
+
+All other documented CLI flags and BitTorr settings are available on older MatriX releases. Version requirements are defined in `vars/feature_matrix.yml`.
 
 ### BitTorr Settings
 
