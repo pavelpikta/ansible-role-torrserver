@@ -64,3 +64,20 @@
   notify: Restart torrserver
   tags:
     - settings
+
+- name: config | Create tg.cfg file
+  ansible.builtin.copy:
+    content: "{{ lookup('ansible.builtin.template', role_path ~ '/templates/tg.cfg.j2') | regex_replace('\r?\n$', '') }}"
+    dest: "{{ torrserver_install_dir }}/tg.cfg"
+    owner: "{{ torrserver_user }}"
+    group: "{{ torrserver_group }}"
+    mode: "0600"
+    backup: true
+  when:
+    - torrserver_tg_token is defined
+    - torrserver_tg_token is not none
+    - (torrserver_tg_token | string | trim) != ''
+  notify: Restart torrserver
+  tags:
+    - telegram
+    - tg_config

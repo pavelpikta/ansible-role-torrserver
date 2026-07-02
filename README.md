@@ -59,6 +59,8 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_searchwa` | `false` | Allow search without authentication (`--searchwa`). |
 | `torrserver_max_size` | `null` | Maximum allowed stream size in bytes (`--maxsize`). |
 | `torrserver_tg_token` | `null` | Telegram bot token (`--tgtoken`). |
+| `torrserver_tg_config` | `{}` | Telegram bot settings for `tg.cfg`. See [Telegram configuration](#telegram-configuration). |
+| `torrserver_tg_config_host` | `{}` | Per-host Telegram overrides merged on top of `torrserver_tg_config`. |
 | `torrserver_fuse_path` | `null` | FUSE mount path (`--fusepath`). |
 | `torrserver_webdav` | `false` | Enable WebDAV (`--webdav`). |
 | `torrserver_ui` | `false` | Open TorrServer page in browser on start (`--ui`). |
@@ -155,6 +157,31 @@ TorznabUrls:
     Name: "jackett"
 ```
 
+### Telegram configuration
+
+When `torrserver_tg_token` is set, the role deploys `tg.cfg` in the TorrServer data directory. Override defaults via `torrserver_tg_config` in group vars or `torrserver_tg_config_host` in host vars.
+
+| Field | Default | Description |
+|-------|---------|-------------|
+| `HostTG` | `https://api.telegram.org` | Telegram Bot API base URL |
+| `HostWeb` | `""` | Base URL for stream links (auto-detected if empty) |
+| `WhiteIds` | `[]` | Allowed Telegram user IDs (empty = allow all) |
+| `BlackIds` | `[]` | Blocked Telegram user IDs |
+| `Socks5` | `""` | Optional SOCKS5 proxy for Telegram API access (e.g. `socks5://user:pass@host:port`) |
+
+**Example:**
+
+```yaml
+torrserver_tg_token: "123456:ABC-DEF..."
+torrserver_tg_config:
+  HostWeb: "https://ts.devsecops.stream"
+  WhiteIds:
+    - 129836428
+  Socks5: "socks5://user:pass@116.202.26.49:48130"
+```
+
+The `tg.cfg` file is written with mode `0600` because it may contain proxy credentials.
+
 ### Advanced Variables
 
 | Variable | Default Value | Description |
@@ -186,6 +213,8 @@ The role supports selective execution with Ansible tags. Use the `torrserver` ta
 | `daemon_config` | Deploy `torrserver.config` (also runs `version`) |
 | `auth` | Deploy `accs.db` authentication file |
 | `settings` | Deploy `settings.json` BitTorr settings (also runs `version`) |
+| `telegram` | Deploy `tg.cfg` Telegram bot configuration (requires `torrserver_tg_token`) |
+| `tg_config` | Alias for `telegram` |
 | `debug` | Show rendered configuration (slurp + debug) |
 | `bbr` | Enable BBR congestion control |
 | `service` | Manage systemd unit |

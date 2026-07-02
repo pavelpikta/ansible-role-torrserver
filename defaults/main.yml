@@ -42,6 +42,19 @@ torrserver_searchwa: false
 torrserver_max_size: null
 torrserver_tg_token: null
 torrserver_fuse_path: null
+
+# Telegram bot configuration (tg.cfg)
+# Override any of these settings by defining torrserver_tg_config in your playbook
+torrserver_tg_config: {}
+# Per-host Telegram overrides (merged on top of torrserver_tg_config; use in host_vars)
+torrserver_tg_config_host: {}
+# Default Telegram bot settings (used as base, merged with torrserver_tg_config)
+torrserver_tg_defaults:
+  HostTG: "https://api.telegram.org"
+  HostWeb: ""
+  WhiteIds: []
+  BlackIds: []
+  Socks5: ""
 torrserver_webdav: false
 torrserver_ui: false
 

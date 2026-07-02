@@ -1,0 +1,13 @@
+{%- set merged_config = torrserver_tg_defaults | combine(torrserver_tg_effective_config, recursive=True) -%}
+{%- set ordered = {} -%}
+{%- for key in torrserver_tg_config_key_order -%}
+{%- if key in merged_config and (key != 'Socks5' or (merged_config[key] | string | trim) != '') -%}
+{%- set _ = ordered.update({key: merged_config[key]}) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- for key in merged_config.keys() | sort -%}
+{%- if key not in torrserver_tg_config_key_order -%}
+{%- set _ = ordered.update({key: merged_config[key]}) -%}
+{%- endif -%}
+{%- endfor -%}
+{{- ordered | to_json(indent=1) -}}
