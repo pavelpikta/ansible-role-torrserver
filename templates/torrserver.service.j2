@@ -13,7 +13,7 @@ ExecStart={{ torrserver_install_dir }}/TorrServer-linux-{{ architecture }} $DAEM
 ExecReload=/bin/kill -HUP ${MAINPID}
 ExecStop=/bin/kill -INT ${MAINPID}
 TimeoutSec=30
-Restart=on-failure
+Restart=always
 RestartSec=5s
 
 [Install]
