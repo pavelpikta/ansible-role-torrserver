@@ -6,7 +6,11 @@
       tags:
         - torrserver
         - setup
-  tags: always
+  tags:
+    - torrserver
+    - setup
+    - dependencies
+    - user
 
 - name: Install TorrServer
   ansible.builtin.include_tasks:
@@ -15,7 +19,12 @@
       tags:
         - torrserver
         - install
-  tags: always
+  tags:
+    - torrserver
+    - install
+    - facts
+    - install_local
+    - install_remote
 
 - name: Configure TorrServer
   ansible.builtin.include_tasks:
@@ -24,7 +33,14 @@
       tags:
         - torrserver
         - config
-  tags: always
+  tags:
+    - torrserver
+    - config
+    - version
+    - daemon_config
+    - auth
+    - settings
+    - debug
 
 - name: Configure BBR
   ansible.builtin.include_tasks:
@@ -33,7 +49,9 @@
       tags:
         - torrserver
         - bbr
-  tags: always
+  tags:
+    - torrserver
+    - bbr
 
 - name: Manage TorrServer service
   ansible.builtin.include_tasks:
@@ -42,4 +60,7 @@
       tags:
         - torrserver
         - service
-  tags: always
+  tags:
+    - torrserver
+    - service
+    - systemd

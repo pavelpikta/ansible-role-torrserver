@@ -66,6 +66,7 @@ torrserver_api_url: https://api.github.com/repos/YouROK/TorrServer
 # If set, the role will copy the binary from this local path instead of downloading
 # Example: /path/to/TorrServer-linux-amd64
 torrserver_local_file: null
+torrserver_use_local: "{{ torrserver_local_file is defined and torrserver_local_file is not none and (torrserver_local_file | string | trim) != '' }}"
 
 # BitTorr settings (settings.json)
 # Override any of these settings by defining torrserver_bittorr_settings in your playbook

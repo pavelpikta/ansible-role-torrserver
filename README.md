@@ -164,6 +164,43 @@ TorznabUrls:
 
 None.
 
+## Tags
+
+The role supports selective execution with Ansible tags. Use the `torrserver` tag to run the full role.
+
+| Tag | Description |
+|-----|-------------|
+| `torrserver` | Run all role tasks |
+| `setup` | Environment preparation (packages, user, directories) |
+| `dependencies` | Install system packages only |
+| `user` | Create torrserver user, group, and install directory |
+| `install` | Binary installation (local or remote) |
+| `facts` | Detect installed TorrServer version before upgrade |
+| `install_local` | Copy binary from `torrserver_local_file` |
+| `install_remote` | Download binary from GitHub releases |
+| `config` | All configuration tasks |
+| `version` | Resolve version capabilities for CLI and BitTorr settings |
+| `daemon_config` | Deploy `torrserver.config` |
+| `auth` | Deploy `accs.db` authentication file |
+| `settings` | Deploy `settings.json` BitTorr settings |
+| `debug` | Show rendered configuration (slurp + debug) |
+| `bbr` | Enable BBR congestion control |
+| `service` | Manage systemd unit |
+| `systemd` | Create and enable the systemd service |
+
+Examples:
+
+```bash
+# Update authentication only
+ansible-playbook playbooks/torrserver.yml --tags auth
+
+# Reinstall binary from GitHub
+ansible-playbook playbooks/torrserver.yml --tags install_remote
+
+# Apply daemon CLI config and BitTorr settings
+ansible-playbook playbooks/torrserver.yml --tags "daemon_config,settings"
+```
+
 ## Example Playbook
 
 ### Basic Example

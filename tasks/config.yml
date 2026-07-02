@@ -7,7 +7,10 @@
         - torrserver
         - config
         - version
-  tags: always
+  tags:
+    - torrserver
+    - config
+    - version
 
 - name: config | Create configuration file
   ansible.builtin.template:

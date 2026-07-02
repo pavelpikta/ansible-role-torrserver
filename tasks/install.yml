@@ -1,16 +1,11 @@
 ---
-- name: install | Set installation method fact
-  ansible.builtin.set_fact:
-    torrserver_use_local: "{{ torrserver_local_file is defined and torrserver_local_file != '' and torrserver_local_file is not none }}"
-  tags:
-    - facts
-
 - name: install | Check installed version
   ansible.builtin.command: "{{ torrserver_install_dir }}/{{ torrserver_bin_prefix }}-{{ architecture }} --version"
   register: installed_version_cmd
   ignore_errors: true
   changed_when: false
   tags:
+    - install
     - facts
 
 - name: install | Set installed version fact
@@ -18,6 +13,7 @@
     torrserver_installed_tag: "{{ installed_version_cmd.stdout | regex_search('MatriX\\.\\d+(?:\\.\\d+)?') }}"
   when: installed_version_cmd.rc == 0
   tags:
+    - install
     - facts
 
 - name: install | Install from local file
@@ -28,8 +24,11 @@
         - torrserver
         - install
         - install_local
-  tags: always
-  when: torrserver_use_local | bool
+  tags:
+    - torrserver
+    - install
+    - install_local
+  when: torrserver_use_local | default(false) | bool
 
 - name: install | Install from remote repository
   ansible.builtin.include_tasks:
@@ -39,5 +38,8 @@
         - torrserver
         - install
         - install_remote
-  tags: always
-  when: not (torrserver_use_local | bool)
+  tags:
+    - torrserver
+    - install
+    - install_remote
+  when: not (torrserver_use_local | default(false) | bool)
