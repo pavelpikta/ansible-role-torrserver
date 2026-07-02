@@ -5,25 +5,35 @@
     return_content: true
   register: latest_release
   when: torrserver_version == 'latest'
+  tags:
+    - install_remote
 
 - name: install_remote | Set target version tag (latest)
   ansible.builtin.set_fact:
     torrserver_target_tag: "{{ latest_release.json.tag_name }}"
   when: torrserver_version == 'latest'
+  tags:
+    - install_remote
 
 - name: install_remote | Set target version tag (specific)
   ansible.builtin.set_fact:
     torrserver_target_tag: "MatriX.{{ torrserver_version }}"
   when: torrserver_version != 'latest'
+  tags:
+    - install_remote
 
 - name: install_remote | Check glibc version
   ansible.builtin.command: ldd --version
   register: ldd_version_cmd
   changed_when: false
+  tags:
+    - install_remote
 
 - name: install_remote | Set glibc version fact
   ansible.builtin.set_fact:
     glibc_version: "{{ ldd_version_cmd.stdout_lines[0] | regex_search('\\d+\\.\\d+') }}"
+  tags:
+    - install_remote
 
 - name: install_remote | Fail if glibc version is too old for newer TorrServer
   ansible.builtin.fail:
@@ -31,8 +41,10 @@
       TorrServer version {{ torrserver_target_tag }} requires glibc >= 2.32.
       Current version is {{ glibc_version }}.
   when:
-    - torrserver_target_tag | regex_replace('MatriX\\.', '') | int >= 136
+    - (torrserver_target_tag | regex_replace('^MatriX\\.', '')) is version('136', '>=')
     - glibc_version is version('2.32', '<')
+  tags:
+    - install_remote
 
 - name: install_remote | Download torrserver binary
   ansible.builtin.get_url:
@@ -44,3 +56,5 @@
     group: "{{ torrserver_group }}"
   when: torrserver_installed_tag is not defined or torrserver_installed_tag != torrserver_target_tag
   notify: Restart torrserver
+  tags:
+    - install_remote

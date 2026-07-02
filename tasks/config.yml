@@ -1,4 +1,14 @@
 ---
+- name: config | Resolve TorrServer version capabilities
+  ansible.builtin.include_tasks:
+    file: version.yml
+    apply:
+      tags:
+        - torrserver
+        - config
+        - version
+  tags: always
+
 - name: config | Create configuration file
   ansible.builtin.template:
     src: torrserver.config.j2
@@ -7,15 +17,21 @@
     group: "{{ torrserver_group }}"
     mode: "0644"
   notify: Restart torrserver
+  tags:
+    - daemon_config
 
 - name: config | Show configuration file
   ansible.builtin.slurp:
     src: "{{ torrserver_install_dir }}/{{ torrserver_service_name }}.config"
   register: config_file_content
+  tags:
+    - debug
 
 - name: config | Display configuration file contents
   ansible.builtin.debug:
     msg: "{{ config_file_content.content | b64decode }}"
+  tags:
+    - debug
 
 - name: config | Create authentication file
   ansible.builtin.template:
@@ -26,6 +42,8 @@
     mode: "0600"
   when: torrserver_enable_auth
   notify: Restart torrserver
+  tags:
+    - auth
 
 - name: config | Create settings.json file
   ansible.builtin.template:
@@ -35,3 +53,5 @@
     group: "{{ torrserver_group }}"
     mode: "0644"
   notify: Restart torrserver
+  tags:
+    - settings

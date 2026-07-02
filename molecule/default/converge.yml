@@ -4,7 +4,7 @@
   gather_facts: true
 
   vars:
-    torrserver_version: 136
+    torrserver_version: 141
     torrserver_enable_bbr: false
     torrserver_enable_auth: false
     torrserver_enable_log: true

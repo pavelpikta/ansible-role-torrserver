@@ -1,15 +1,45 @@
 ---
 - name: Setup environment
-  ansible.builtin.include_tasks: setup.yml
+  ansible.builtin.include_tasks:
+    file: setup.yml
+    apply:
+      tags:
+        - torrserver
+        - setup
+  tags: always
 
 - name: Install TorrServer
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - torrserver
+        - install
+  tags: always
 
 - name: Configure TorrServer
-  ansible.builtin.include_tasks: config.yml
+  ansible.builtin.include_tasks:
+    file: config.yml
+    apply:
+      tags:
+        - torrserver
+        - config
+  tags: always
 
 - name: Configure BBR
-  ansible.builtin.include_tasks: bbr.yml
+  ansible.builtin.include_tasks:
+    file: bbr.yml
+    apply:
+      tags:
+        - torrserver
+        - bbr
+  tags: always
 
 - name: Manage TorrServer service
-  ansible.builtin.include_tasks: service.yml
+  ansible.builtin.include_tasks:
+    file: service.yml
+    apply:
+      tags:
+        - torrserver
+        - service
+  tags: always

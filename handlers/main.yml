@@ -4,3 +4,7 @@
     name: "{{ torrserver_service_name }}"
     state: restarted
     daemon_reload: true
+  tags:
+    - torrserver
+    - service
+    - systemd
