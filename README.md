@@ -80,7 +80,7 @@ The role detects the effective TorrServer version from the installed binary (or 
 | MatriX.138 | — | `TMDBSettings`, `EnableProxy`, `ProxyHosts` |
 | MatriX.141.10 | `force-https` | `EnableLPD`, `LPDIPv6`, `TrackTimecode` |
 
-All other documented CLI flags and BitTorr settings are available on older MatriX releases. Version requirements are defined in `vars/feature_matrix.yml`.
+All other documented CLI flags and BitTorr settings are available on older MatriX releases. Version requirements are defined in `vars/main.yml`.
 
 ### BitTorr Settings
 
