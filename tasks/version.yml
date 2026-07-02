@@ -106,7 +106,7 @@
   ansible.builtin.set_fact:
     torrserver_unsupported_bittorr_settings: "{{ torrserver_unsupported_bittorr_settings | default([]) + [item.key] }}"
   when:
-    - item.key in (torrserver_bittorr_settings | default({}))
+    - item.key in torrserver_bittorr_effective_settings
     - not (torrserver_version_sortable is version(torrserver_bittorr_feature_versions[item.key], '>='))
   loop: "{{ torrserver_bittorr_feature_versions | dict2items }}"
   loop_control:

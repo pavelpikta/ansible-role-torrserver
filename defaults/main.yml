@@ -71,6 +71,8 @@ torrserver_use_local: "{{ torrserver_local_file is defined and torrserver_local_
 # BitTorr settings (settings.json)
 # Override any of these settings by defining torrserver_bittorr_settings in your playbook
 torrserver_bittorr_settings: {}
+# Per-host BitTorr overrides (merged on top of torrserver_bittorr_settings; use in host_vars)
+torrserver_bittorr_settings_host: {}
 # Default BitTorr settings (used as base, merged with torrserver_bittorr_settings)
 torrserver_bittorr_defaults:
   CacheSize: 67108864

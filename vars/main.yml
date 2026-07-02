@@ -9,6 +9,10 @@ torrserver_arch_map:
 
 architecture: "{{ torrserver_arch_map[ansible_facts['architecture']] | default('amd64') }}"
 
+torrserver_bittorr_effective_settings: >-
+  {{ torrserver_bittorr_settings | default({})
+     | combine(torrserver_bittorr_settings_host | default({}), recursive=True) }}
+
 # Minimum TorrServer MatriX version required for CLI flags and BitTorr settings.
 # Versions use MatriX numbering (e.g. 141.10 for MatriX.141.10).
 torrserver_feature_versions:
@@ -36,3 +40,45 @@ torrserver_bittorr_feature_versions:
   EnableLPD: "141.10"
   LPDIPv6: "141.10"
   TrackTimecode: "141.10"
+
+# BitTorr settings.json key order used by the TorrServer web UI.
+torrserver_bittorr_settings_key_order:
+  - CacheSize
+  - ConnectionsLimit
+  - DisableDHT
+  - DisablePEX
+  - DisableTCP
+  - DisableUPNP
+  - DisableUTP
+  - DisableUpload
+  - DownloadRateLimit
+  - EnableDLNA
+  - EnableDebug
+  - EnableIPv6
+  - EnableLPD
+  - EnableProxy
+  - EnableRutorSearch
+  - EnableTorznabSearch
+  - ForceEncrypt
+  - FriendlyName
+  - LPDIPv6
+  - PeersListenPort
+  - PreloadCache
+  - ProxyHosts
+  - ReaderReadAHead
+  - RemoveCacheOnDrop
+  - ResponsiveMode
+  - RetrackersMode
+  - ShowFSActiveTorr
+  - SslCert
+  - SslKey
+  - SslPort
+  - StoreSettingsInJson
+  - StoreViewedInJson
+  - TMDBSettings
+  - TorrentDisconnectTimeout
+  - TorrentsSavePath
+  - TorznabUrls
+  - TrackTimecode
+  - UploadRateLimit
+  - UseDisk

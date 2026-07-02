@@ -84,11 +84,14 @@ All other documented CLI flags and BitTorr settings are available on older Matri
 
 ### BitTorr Settings
 
-The role supports configuration of BitTorr settings via `settings.json`. You can override any default setting by defining `torrserver_bittorr_settings` in your playbook. The role will merge your custom settings with the defaults.
+The role supports configuration of BitTorr settings via `settings.json`. You can override any default setting by defining `torrserver_bittorr_settings` in your playbook or group vars. The role will merge your custom settings with the defaults.
+
+Use `torrserver_bittorr_settings_host` in `host_vars` for per-host overrides. It is merged on top of `torrserver_bittorr_settings` without replacing the group dictionary.
 
 | Variable | Default Value | Description |
 |----------|---------------|-------------|
 | `torrserver_bittorr_settings` | `{}` | Dictionary of BitTorr settings to override. See below for available settings. |
+| `torrserver_bittorr_settings_host` | `{}` | Per-host BitTorr overrides merged on top of `torrserver_bittorr_settings`. |
 | `torrserver_bittorr_defaults` | See `defaults/main.yml` | Default BitTorr settings (internal use). |
 
 **Available BitTorr Settings:**
@@ -180,9 +183,9 @@ The role supports selective execution with Ansible tags. Use the `torrserver` ta
 | `install_remote` | Download binary from GitHub releases |
 | `config` | All configuration tasks |
 | `version` | Resolve version capabilities for CLI and BitTorr settings |
-| `daemon_config` | Deploy `torrserver.config` |
+| `daemon_config` | Deploy `torrserver.config` (also runs `version`) |
 | `auth` | Deploy `accs.db` authentication file |
-| `settings` | Deploy `settings.json` BitTorr settings |
+| `settings` | Deploy `settings.json` BitTorr settings (also runs `version`) |
 | `debug` | Show rendered configuration (slurp + debug) |
 | `bbr` | Enable BBR congestion control |
 | `service` | Manage systemd unit |

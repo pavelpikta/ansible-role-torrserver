@@ -7,10 +7,14 @@
         - torrserver
         - config
         - version
+        - daemon_config
+        - settings
   tags:
     - torrserver
     - config
     - version
+    - daemon_config
+    - settings
 
 - name: config | Create configuration file
   ansible.builtin.template:
@@ -49,8 +53,8 @@
     - auth
 
 - name: config | Create settings.json file
-  ansible.builtin.template:
-    src: settings.json.j2
+  ansible.builtin.copy:
+    content: "{{ lookup('ansible.builtin.template', role_path ~ '/templates/settings.json.j2') | regex_replace('\r?\n$', '') }}"
     dest: "{{ torrserver_install_dir }}/settings.json"
     owner: "{{ torrserver_user }}"
     group: "{{ torrserver_group }}"
