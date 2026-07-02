@@ -23,6 +23,7 @@
     owner: "{{ torrserver_user }}"
     group: "{{ torrserver_group }}"
     mode: "0644"
+    backup: true
   notify: Restart torrserver
   tags:
     - daemon_config
@@ -59,6 +60,7 @@
     owner: "{{ torrserver_user }}"
     group: "{{ torrserver_group }}"
     mode: "0644"
+    backup: true
   notify: Restart torrserver
   tags:
     - settings
