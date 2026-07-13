@@ -189,6 +189,23 @@
   tags:
     - version
 
+- name: version | Fail when strict mode is enabled and multiple bind addresses are unsupported
+  ansible.builtin.fail:
+    msg: >-
+      torrserver_ip lists multiple bind addresses but repeatable --ip requires TorrServer >= MatriX.{{ torrserver_feature_versions.ip_repeatable }}
+      (effective version: {{ torrserver_effective_tag }}). Set torrserver_version_strict: false to use the first address only.
+  when:
+    - torrserver_ip is defined
+    - torrserver_ip is not none
+    - torrserver_ip is iterable
+    - torrserver_ip is not mapping
+    - torrserver_ip is not string
+    - torrserver_ip | length > 1
+    - not (torrserver_capabilities.ip_repeatable | default(false) | bool)
+    - torrserver_version_strict | bool
+  tags:
+    - version
+
 - name: version | Fail when strict mode is enabled and CLI options are unsupported
   ansible.builtin.fail:
     msg: >-
