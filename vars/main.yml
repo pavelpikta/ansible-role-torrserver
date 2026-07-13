@@ -75,6 +75,7 @@ torrserver_feature_versions:
   proxy_url: "137"
   proxy_mode: "137"
   force_https: "141.10"
+  ip_repeatable: "142.1"
 
 torrserver_bittorr_feature_versions:
   ResponsiveMode: "136"
@@ -86,9 +87,14 @@ torrserver_bittorr_feature_versions:
   TMDBSettings: "138"
   EnableProxy: "138"
   ProxyHosts: "138"
-  EnableLPD: "141.10"
-  LPDIPv6: "141.10"
-  TrackTimecode: "141.10"
+  EnableLPD: "142"
+  LPDIPv6: "142"
+  TrackTimecode: "142"
+
+# BitTorr settings removed in newer TorrServer releases.
+torrserver_bittorr_feature_deprecated:
+  EnableProxy: "142"
+  ProxyHosts: "142"
 
 # BitTorr settings.json key order used by the TorrServer web UI.
 torrserver_bittorr_settings_key_order:

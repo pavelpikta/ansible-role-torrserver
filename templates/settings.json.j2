@@ -1,7 +1,9 @@
 {%- set merged_settings = torrserver_bittorr_defaults | combine(torrserver_bittorr_effective_settings, recursive=True) -%}
 {%- set ns = namespace(filtered={}) -%}
 {%- for key, value in merged_settings.items() -%}
-{%- if key not in torrserver_bittorr_feature_versions or (torrserver_version_sortable is version(torrserver_bittorr_feature_versions[key], '>=')) -%}
+{%- set version_supported = key not in torrserver_bittorr_feature_versions or (torrserver_version_sortable is version(torrserver_bittorr_feature_versions[key], '>=')) -%}
+{%- set version_not_deprecated = key not in torrserver_bittorr_feature_deprecated or not (torrserver_version_sortable is version(torrserver_bittorr_feature_deprecated[key], '>=')) -%}
+{%- if version_supported and version_not_deprecated -%}
 {%- set _ = ns.filtered.update({key: value}) -%}
 {%- endif -%}
 {%- endfor -%}

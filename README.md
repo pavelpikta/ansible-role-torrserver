@@ -39,7 +39,7 @@ Available variables are listed below, along with default values (see `defaults/m
 | `torrserver_group` | `torrserver` | System group for TorrServer. |
 | `torrserver_install_dir` | `/opt/torrserver` | Directory where TorrServer will be installed. |
 | `torrserver_port` | `8090` | Port for TorrServer web interface (`--port`). |
-| `torrserver_ip` | `null` | Bind address for the web server (`--ip`). |
+| `torrserver_ip` | `null` | Bind address(es) for the web server (`--ip`). String or list of strings (list requires MatriX.142.1+). |
 | `torrserver_service_name` | `torrserver` | Name of the systemd service. |
 | `torrserver_read_only` | `false` | Enable read-only database mode (`--rdb`). |
 | `torrserver_enable_log` | `false` | Enable logging to file. |
@@ -79,7 +79,11 @@ The role detects the effective TorrServer version from the installed binary (or 
 | MatriX.136 | `ip`, `tgtoken` | `ResponsiveMode` |
 | MatriX.137 | `fusepath`, `webdav`, `proxyurl`, `proxymode` | `EnableTorznabSearch`, `TorznabUrls`, `ShowFSActiveTorr`, `StoreSettingsInJson`, `StoreViewedInJson` |
 | MatriX.138 | — | `TMDBSettings`, `EnableProxy`, `ProxyHosts` |
-| MatriX.141.10 | `force-https` | `EnableLPD`, `LPDIPv6`, `TrackTimecode` |
+| MatriX.141.10 | `force-https` | — |
+| MatriX.142 | — | `EnableLPD`, `LPDIPv6`, `TrackTimecode` |
+| MatriX.142.1 | repeatable `ip` | — |
+
+`EnableProxy` and `ProxyHosts` were removed in MatriX.142 and are omitted automatically on newer versions.
 
 All other documented CLI flags and BitTorr settings are available on older MatriX releases. Version requirements are defined in `vars/main.yml`.
 
