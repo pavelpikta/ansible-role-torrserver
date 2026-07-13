@@ -166,7 +166,6 @@
   loop: "{{ torrserver_deprecated_bittorr_settings | default([]) }}"
   when:
     - torrserver_deprecated_bittorr_settings | default([]) | length > 0
-    - not (torrserver_version_strict | bool)
   loop_control:
     label: "{{ item }}"
   tags:
