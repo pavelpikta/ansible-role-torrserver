@@ -1,7 +1,21 @@
 {%- set daemon_options = [] -%}
 {%- set _ = daemon_options.append('--port ' + (torrserver_port | default('') | string)) -%}
-{%- if torrserver_capabilities.ip | default(false) | bool and torrserver_ip is defined and torrserver_ip is not none and (torrserver_ip | string | trim) != '' -%}
-{%- set _ = daemon_options.append('--ip ' + (torrserver_ip | string | trim)) -%}
+{%- set ip_addresses = [] -%}
+{%- if torrserver_ip is defined and torrserver_ip is not none -%}
+{%- if torrserver_ip is string and (torrserver_ip | string | trim) != '' -%}
+{%- set ip_addresses = [torrserver_ip | string | trim] -%}
+{%- elif torrserver_ip is iterable and torrserver_ip is not mapping -%}
+{%- set ip_addresses = torrserver_ip | map('string') | map('trim') | reject('equalto', '') | list -%}
+{%- endif -%}
+{%- endif -%}
+{%- if torrserver_capabilities.ip | default(false) | bool and ip_addresses | length > 0 -%}
+{%- if ip_addresses | length > 1 and not (torrserver_capabilities.ip_repeatable | default(false) | bool) -%}
+{%- set _ = daemon_options.append('--ip ' + ip_addresses[0]) -%}
+{%- else -%}
+{%- for ip_address in ip_addresses -%}
+{%- set _ = daemon_options.append('--ip ' + ip_address) -%}
+{%- endfor -%}
+{%- endif -%}
 {%- endif -%}
 {%- set _ = daemon_options.append('--path ' + (torrserver_install_dir | default('') | string)) -%}
 {%- if torrserver_read_only | bool -%}

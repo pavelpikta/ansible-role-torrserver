@@ -78,7 +78,11 @@
       active: "{{ torrserver_max_size is defined and torrserver_max_size is not none and (torrserver_max_size | string | trim) != '' }}"
     - feature: ip
       option: torrserver_ip
-      active: "{{ torrserver_ip is defined and torrserver_ip is not none and (torrserver_ip | string | trim) != '' }}"
+      active: >-
+        {{ (torrserver_ip is defined and torrserver_ip is not none and (
+          (torrserver_ip is string and (torrserver_ip | string | trim) != '') or
+          (torrserver_ip is iterable and torrserver_ip is not mapping and torrserver_ip | length > 0)
+        )) }}
     - feature: tg_token
       option: torrserver_tg_token
       active: "{{ torrserver_tg_token is defined and torrserver_tg_token is not none and (torrserver_tg_token | string | trim) != '' }}"
@@ -114,6 +118,18 @@
   tags:
     - version
 
+- name: version | Collect deprecated active BitTorr settings
+  ansible.builtin.set_fact:
+    torrserver_deprecated_bittorr_settings: "{{ torrserver_deprecated_bittorr_settings | default([]) + [item.key] }}"
+  when:
+    - item.key in torrserver_bittorr_effective_settings
+    - torrserver_version_sortable is version(torrserver_bittorr_feature_deprecated[item.key], '>=')
+  loop: "{{ torrserver_bittorr_feature_deprecated | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  tags:
+    - version
+
 - name: version | Warn about unsupported options for installed version
   ansible.builtin.debug:
     msg: >-
@@ -139,6 +155,53 @@
     - not (torrserver_version_strict | bool)
   loop_control:
     label: "{{ item }}"
+  tags:
+    - version
+
+- name: version | Warn about deprecated BitTorr settings for installed version
+  ansible.builtin.debug:
+    msg: >-
+      Skipping deprecated BitTorr setting {{ item }}: removed in TorrServer >= MatriX.{{ torrserver_bittorr_feature_deprecated[item] }}
+      (effective version: {{ torrserver_effective_tag }})
+  loop: "{{ torrserver_deprecated_bittorr_settings | default([]) }}"
+  when:
+    - torrserver_deprecated_bittorr_settings | default([]) | length > 0
+  loop_control:
+    label: "{{ item }}"
+  tags:
+    - version
+
+- name: version | Warn when multiple bind addresses require newer TorrServer
+  ansible.builtin.debug:
+    msg: >-
+      Using first bind address only: multiple --ip values require TorrServer >= MatriX.{{ torrserver_feature_versions.ip_repeatable }}
+      (effective version: {{ torrserver_effective_tag }})
+  when:
+    - torrserver_ip is defined
+    - torrserver_ip is not none
+    - torrserver_ip is iterable
+    - torrserver_ip is not mapping
+    - torrserver_ip is not string
+    - torrserver_ip | length > 1
+    - not (torrserver_capabilities.ip_repeatable | default(false) | bool)
+    - not (torrserver_version_strict | bool)
+  tags:
+    - version
+
+- name: version | Fail when strict mode is enabled and multiple bind addresses are unsupported
+  ansible.builtin.fail:
+    msg: >-
+      torrserver_ip lists multiple bind addresses but repeatable --ip requires TorrServer >= MatriX.{{ torrserver_feature_versions.ip_repeatable }}
+      (effective version: {{ torrserver_effective_tag }}). Set torrserver_version_strict: false to use the first address only.
+  when:
+    - torrserver_ip is defined
+    - torrserver_ip is not none
+    - torrserver_ip is iterable
+    - torrserver_ip is not mapping
+    - torrserver_ip is not string
+    - torrserver_ip | length > 1
+    - not (torrserver_capabilities.ip_repeatable | default(false) | bool)
+    - torrserver_version_strict | bool
   tags:
     - version
 
